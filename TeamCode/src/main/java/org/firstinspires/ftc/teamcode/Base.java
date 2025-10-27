@@ -16,8 +16,8 @@ public class Base extends OpMode {
     public MecanumDrive driveSystem;
     public Roller launcher;
     public Roller intake;
-    public VisionPortalCamera camera;
 
+    public VisionPortalCamera camera;
     public AprilTagProcessor aTagProc;
 
     //If overriding init(), make to sure call super.init();
@@ -40,7 +40,5 @@ public class Base extends OpMode {
     }
 
     @Override
-    public void loop() {
-
-    }
+    public void loop() {}
 }
