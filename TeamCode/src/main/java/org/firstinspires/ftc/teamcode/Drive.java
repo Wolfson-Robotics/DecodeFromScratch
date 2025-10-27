@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode;
 
-public class TeleOp extends Base {
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
+@TeleOp(name = "TeleOp")
+public class Drive extends Base {
 
     @Override
     public void loop() {
