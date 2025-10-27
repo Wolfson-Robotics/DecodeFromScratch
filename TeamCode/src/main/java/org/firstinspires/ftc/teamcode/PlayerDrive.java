@@ -2,8 +2,8 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name = "TeleOp")
-public class Drive extends Base {
+@TeleOp(name = "PlayerDrive")
+public class PlayerDrive extends Base {
 
     @Override
     public void loop() {
