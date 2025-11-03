@@ -18,43 +18,23 @@ public class AutoDrive extends Base {
     public final int PGP_TAG = 22;
     public final int PPG_TAG = 23;
 
-    enum AUTO_MODE {
-        GPP,
-        PGP,
-        PPG,
-        DO_NOTHING
-    }
-    protected AUTO_MODE mode = AUTO_MODE.DO_NOTHING;
+    protected boolean USE_CAMERA = false;
+
 
     @Override
     public void init() {
         super.init();
-        initCamera();
+
+        if (USE_CAMERA) {
+            initCamera();
+            if (camera == null) { USE_CAMERA = false; }
+        }
         driveSystem.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    @Override
-    public void init_loop() {
-        telemetry.addLine("||CURRENT MODE: " + mode + "||");
-        telemetry.addLine("A: GPP");
-        telemetry.addLine("B: PGP");
-        telemetry.addLine("X: PPG");
-        telemetry.addLine("Y: Do Nothing (DEFAULT STATE)");
-        telemetry.update();
-
-        if (gamepad1.a) { mode = AUTO_MODE.GPP; }
-        if (gamepad1.b) { mode = AUTO_MODE.PGP; }
-        if (gamepad1.x) { mode = AUTO_MODE.PPG; }
-        if (gamepad1.y) { mode = AUTO_MODE.DO_NOTHING; }
-    }
-
+    boolean toggle = false;
     @Override
     public void loop() {
-        for (AprilTagDetection detection : aTagProc.getDetections()) {
-            telemetry.addData("Detected Tag: ", detection.metadata.name);
-        }
-        telemetry.speak("I have become sentient, praise me");
-        telemetry.update();
     }
 
 }

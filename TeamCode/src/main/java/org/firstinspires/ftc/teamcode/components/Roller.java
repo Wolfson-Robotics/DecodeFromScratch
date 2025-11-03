@@ -24,8 +24,9 @@ public class Roller<T extends DcMotorSimple> {
     Applies SWAP_DIRECTION and sets power
      */
     public void applyPower(double power) {
-        if (SWAP_DIRECTION) { power = -power; }
         power = Math.min(power, MAX_POWER);
+        power = Math.max(power, -1);
+        if (SWAP_DIRECTION) { power = -power; }
         motor.setPower(power);
     }
 
@@ -40,11 +41,7 @@ public class Roller<T extends DcMotorSimple> {
      */
     public void adjustPower(boolean increase) {
         double power = Math.abs(motor.getPower());
-
         power += increase ? POWER_INCREMENT : -POWER_INCREMENT;
-        power = Math.max(power, 0);
-        power = Math.min(power, 1);
-
         applyPower(power);
     }
 

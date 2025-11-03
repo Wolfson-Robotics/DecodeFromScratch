@@ -13,7 +13,7 @@ public class TestMecanum extends Base {
 
     //TEMP TEST CONSISTENT DRIVE
     static final double HD_COUNTS_PER_REV = 537.7;
-    static final double DRIVE_GEAR_REDUCTION = 19.2;
+    static final double DRIVE_GEAR_REDUCTION = 19.2; //Or maybe just 1.0
     static final double WHEEL_DIAMETER_MM =  104;
     static final double WHEEL_CIRCUMFERENCE_MM = WHEEL_DIAMETER_MM * Math.PI;
     static final double DRIVE_COUNTS_PER_MM = (HD_COUNTS_PER_REV * DRIVE_GEAR_REDUCTION) / WHEEL_CIRCUMFERENCE_MM;
@@ -22,8 +22,7 @@ public class TestMecanum extends Base {
     @Override
     public void init() {
         super.init();
-        driveSystem.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        //driveSystem.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        // driveSystem.getAllMotors().forEach(n -> n.setMode(DcMotor.RunMode.RUN_USING_ENCODER));
     }
 
     boolean yToggle = false;
