@@ -1,5 +1,10 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.os.Build;
+import android.os.Environment;
+
+import androidx.annotation.RequiresApi;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.CRServoImpl;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -26,6 +31,10 @@ public class Base extends OpMode {
     public AprilTagProcessor aTagProc;
 
     public IMU imu;
+
+    //Storage/Files
+    protected final String storagePath = Environment.getExternalStorageDirectory().getPath();
+    protected final String logsPath = storagePath + "/Logs/";
 
     //If overriding init(), make to sure call super.init();
     @Override
