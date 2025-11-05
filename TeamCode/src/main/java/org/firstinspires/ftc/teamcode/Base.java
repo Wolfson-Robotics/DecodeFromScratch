@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import static org.firstinspires.ftc.teamcode.debug.HardwareSnapshot.NO_VOLTAGE;
+
 import android.os.Build;
 import android.os.Environment;
 
@@ -11,6 +13,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.components.Roller;
@@ -18,11 +21,13 @@ import org.firstinspires.ftc.teamcode.components.MecanumDrive;
 import org.firstinspires.ftc.teamcode.components.camera.VisionPortalCamera;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
+import java.util.Optional;
+
 public class Base extends OpMode {
 
     //Components
     public MecanumDrive driveSystem;
-    public Roller launcher;
+    public Roller<DcMotorEx> launcher;
     public Roller intake;
     public Roller leftSpinner;
     public Roller centerSpinner;
@@ -64,4 +69,33 @@ public class Base extends OpMode {
 
     @Override
     public void loop() {}
+
+
+
+    /*
+    Voltage
+    -------
+     */
+    public static final double NOMINAL_VOLTAGE = 14; //TODO: Check battery voltage
+    public static final double TOP_SCALE_FACTOR = 1.2; //120%
+    public static final double NO_VOLTAGE = -1;
+    protected double scaleVoltPF() {
+        double currentVoltage = getVoltage();
+        if (currentVoltage == NO_VOLTAGE) return 1.; //There's gotta be a better way to do this
+        return Math.min((NOMINAL_VOLTAGE / currentVoltage), TOP_SCALE_FACTOR);
+    }
+
+    // temporary
+    protected double scaleVoltPF(double currVoltage) {
+        double currentVoltage = currVoltage;
+        if (currentVoltage == NO_VOLTAGE) return 1.; //There's gotta be a better way to do this
+//        return Math.min((NOMINAL_VOLTAGE / currentVoltage), TOP_SCALE_FACTOR);
+        return NOMINAL_VOLTAGE/currentVoltage;
+    }
+    public VoltageSensor getVoltageSensor() {
+        return hardwareMap.voltageSensor.get("Control Hub");
+    }
+    public double getVoltage() {
+        return Optional.ofNullable(getVoltageSensor()).map(VoltageSensor::getVoltage).orElse(NO_VOLTAGE);
+    }
 }

@@ -22,8 +22,6 @@ public class PlayerDrive extends Base {
         //TEMP: Increase launcher speed values
         if (gamepad1.xWasPressed()) { launcher.MAX_POWER -= .1; }
         if (gamepad1.bWasPressed()) { launcher.MAX_POWER += .1; }
-        telemetry.addData("Launcher Power: ", launcher.MAX_POWER);
-        telemetry.update();
 
         //Slow down when holding left or right bumper
         if (gamepad1.right_bumper || gamepad1.left_bumper) { driveSystem.powerFactor = 0.2; }
@@ -36,13 +34,30 @@ public class PlayerDrive extends Base {
          */
         boolean ACTIVE_LAUNCHER = gamepad1.left_trigger > 0.1;
         boolean ACTIVE_INTAKE = gamepad1.right_trigger > 0.1;
-        launcher.adjustPower(ACTIVE_LAUNCHER);
-        intake.adjustPower(ACTIVE_INTAKE);
+        double PRINCIPAL_POWER = 0.61;
+        double voltage = getVoltage();
+        double res = scaleVoltPF(voltage);
+        double res2 = 0.7*res;
 
-        leftSpinner.SWAP_DIRECTION = ACTIVE_LAUNCHER;
+        launcher.MAX_POWER = PRINCIPAL_POWER*res;
+        launcher.togglePower(ACTIVE_LAUNCHER, launcher.MAX_POWER);
+//        launcher.
+
+        intake.togglePower(ACTIVE_INTAKE, intake.MAX_POWER);
+
+        leftSpinner.SWAP_DIRECTION = gamepad1.a;
         boolean SPIN_SPINNERS = ACTIVE_INTAKE || gamepad1.a;
         leftSpinner.togglePower(SPIN_SPINNERS, leftSpinner.MAX_POWER);
         centerSpinner.togglePower(SPIN_SPINNERS, centerSpinner.MAX_POWER);
+
+        telemetry.addData("leftSpinner power", leftSpinner.motor.getPower());
+        telemetry.addData("rightSpinner power", leftSpinner.motor.getPower());
+        telemetry.addData("scale/res", res);
+        telemetry.addData("res 2", res2);
+        telemetry.addData("voltage", voltage);
+        telemetry.addData("Launcher Power: ", launcher.MAX_POWER);
+        telemetry.addData("Launcher ACTUAL Power: ", launcher.motor.getPower());
+        telemetry.update();
     }
 
     private void gamepad2Loop() {}
