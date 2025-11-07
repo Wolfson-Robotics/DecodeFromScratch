@@ -31,7 +31,6 @@ public class TestAuto extends AutoDrive {
      */
     @Override
     public void loop() {
-        super.loop();
 
         if (USE_CAMERA) {
             for (AprilTagDetection tag : aTagProc.getDetections()) {

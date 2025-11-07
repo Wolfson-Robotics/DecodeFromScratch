@@ -3,13 +3,10 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.teamcode.components.MecanumDrive;
-import org.firstinspires.ftc.teamcode.components.Roller;
-import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.teamcode.debug.util.Async;
 
 @Autonomous(name = "AutoDrive")
-public class AutoDrive extends Base {
+public abstract class AutoDrive extends RobotBase {
 
     //April Tag IDs
     public final int BLUE_TAG = 20;
@@ -32,9 +29,15 @@ public class AutoDrive extends Base {
         driveSystem.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    boolean toggle = false;
     @Override
-    public void loop() {
+    public void start() {
+        moveBot(10, 1, 0, 0);
+        Async.sleep(200);
+        moveBot(20, 1, 0, 0);
     }
+
+
+    boolean toggle = false;
+
 
 }

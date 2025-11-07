@@ -1,14 +1,8 @@
 package org.firstinspires.ftc.teamcode.debug;
 
 
-import static org.firstinspires.ftc.teamcode.debug.util.GeneralUtils.signClamp;
-
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-
-import org.firstinspires.ftc.teamcode.Base;
-import org.firstinspires.ftc.teamcode.debug.handlers.DcMotorExHandler;
 import org.firstinspires.ftc.teamcode.debug.instructions.DebugInstruction;
-public abstract class DebugAuto extends TranslationBase {
+public abstract class DebugAuto extends TranslationRobotBase {
 
     // TODO: Make room for other movements in a different thread
     @Override

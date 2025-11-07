@@ -2,11 +2,11 @@ package org.firstinspires.ftc.teamcode.testing;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.Base;
+import org.firstinspires.ftc.teamcode.RobotBase;
 import org.firstinspires.ftc.teamcode.debug.util.Async;
 
 @TeleOp(name = "LauncherVoltageFinder")
-public class LauncherVoltageFinder extends Base {
+public class LauncherVoltageFinder extends RobotBase {
 
     @Override
     public void init() {

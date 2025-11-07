@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.debug;
 
 import static org.firstinspires.ftc.teamcode.debug.util.GeneralUtils.signClamp;
 
-import org.firstinspires.ftc.teamcode.Base;
+import org.firstinspires.ftc.teamcode.RobotBase;
 import org.firstinspires.ftc.teamcode.debug.handlers.DcMotorExHandler;
 import org.firstinspires.ftc.teamcode.debug.util.Async;
 
@@ -13,7 +13,7 @@ This class was made to translate the code from the old code base to the new comp
 one.
 
  */
-public class TranslationBase extends Base {
+public abstract class TranslationRobotBase extends RobotBase {
 
     /*
     ---------

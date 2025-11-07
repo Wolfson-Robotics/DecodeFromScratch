@@ -1,36 +1,27 @@
 package org.firstinspires.ftc.teamcode;
 
-import static org.firstinspires.ftc.teamcode.debug.HardwareSnapshot.NO_VOLTAGE;
-
-import android.os.Build;
 import android.os.Environment;
 
-import androidx.annotation.RequiresApi;
-
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.CRServoImpl;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.components.Roller;
 import org.firstinspires.ftc.teamcode.components.MecanumDrive;
 import org.firstinspires.ftc.teamcode.components.camera.VisionPortalCamera;
+import org.firstinspires.ftc.teamcode.debug.util.Async;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.Optional;
 
-public class Base extends OpMode {
+public abstract class RobotBase extends OpMode {
 
     //Components
     public MecanumDrive driveSystem;
     public Roller<DcMotorEx> launcher;
-    public Roller intake;
-    public Roller leftSpinner;
-    public Roller centerSpinner;
+    public Roller intake, leftSpinner, centerSpinner;
 
     public VisionPortalCamera camera;
     public AprilTagProcessor aTagProc;
@@ -41,21 +32,26 @@ public class Base extends OpMode {
     protected final String storagePath = Environment.getExternalStorageDirectory().getPath();
     protected final String logsPath = storagePath + "/Logs/";
 
+    public DcMotorEx lf, lb, rf, rb;
+
     //If overriding init(), make to sure call super.init();
     @Override
     public void init() {
         imu = (IMU) hardwareMap.get("imu");
-        driveSystem = new MecanumDrive(
-                hardwareMap,
-                "lf_drive", "lb_drive", "rf_drive", "rb_drive"
-        );
+
+        lf = hardwareMap.get(DcMotorEx.class, "lf_drive");
+        lb = hardwareMap.get(DcMotorEx.class, "lb_drive");
+        rf = hardwareMap.get(DcMotorEx.class, "rf_drive");
+        rb = hardwareMap.get(DcMotorEx.class, "rb_drive");
+
+        driveSystem = new MecanumDrive(lf, lb, rf, rb);
         driveSystem.imu = imu;
-        launcher = new Roller(hardwareMap, "launcher");
-        intake = new Roller(hardwareMap, "intake");
+        launcher = new Roller<>(hardwareMap, "launcher");
+        intake = new Roller<>(hardwareMap, "intake");
         intake.SWAP_DIRECTION = true;
-        leftSpinner = new Roller(hardwareMap, "left_spin");
+        leftSpinner = new Roller<>(hardwareMap, "left_spin");
         leftSpinner.SWAP_DIRECTION = true;
-        centerSpinner = new Roller(hardwareMap, "center_spin");
+        centerSpinner = new Roller<>(hardwareMap, "center_spin");
     }
 
     //By default this will not be called in init() of base, so extending classes have to call it to use it
@@ -66,9 +62,6 @@ public class Base extends OpMode {
                 aTagProc
         );
     }
-
-    @Override
-    public void loop() {}
 
 
 
@@ -98,4 +91,70 @@ public class Base extends OpMode {
     public double getVoltage() {
         return Optional.ofNullable(getVoltageSensor()).map(VoltageSensor::getVoltage).orElse(NO_VOLTAGE);
     }
+
+
+
+
+
+
+
+
+
+    double ticsPerInch = 1;
+    double intCon = 1;
+    double powerFactor = 1;
+    // moveBotOld (uses tics-based motion)
+    protected void moveBotOld(double distIN, double vertical, double pivot, double horizontal) {
+
+        // 23 motor tics = 1 IN
+        int motorTics;
+        int posNeg = (vertical >= 0) ? 1 : -1;
+
+        rf.setPower(powerFactor * (-pivot + (vertical - horizontal)));
+        rb.setPower(powerFactor * (-pivot + vertical + horizontal));
+        lf.setPower(powerFactor * (pivot + vertical + horizontal));
+        lb.setPower(powerFactor * (pivot + (vertical - horizontal)));
+
+        if (horizontal != 0) {
+            posNeg = (horizontal > 0) ? 1 : -1;
+            motorTics = lf.getCurrentPosition() + (int) ((distIN * intCon) * (posNeg));
+            if (posNeg == 1) {
+                // right goes negative
+                while ((lf.getCurrentPosition() < motorTics)) {
+                    Thread.yield();
+                }
+            } else {
+                // left goes positive
+                while ((lf.getCurrentPosition() > motorTics)) {
+                    Thread.yield();
+                }
+            }
+        } else {
+            posNeg = vertical >= 0 ? -1 : 1;
+            motorTics = rf.getCurrentPosition() + (int) ((distIN * intCon) * posNeg);
+            if (posNeg == -1) {
+                while (rf.getCurrentPosition() > motorTics) {
+                    Thread.yield();
+                }
+            } else {
+                while ((rf.getCurrentPosition() < motorTics)) {
+                    Thread.yield();
+                }
+            }
+
+        }
+//        removePower();
+        lf.setPower(0);
+        lb.setPower(0);
+        rf.setPower(0);
+        rb.setPower(0);
+
+    }
+
+    // wrapper
+    protected void moveBot(double in, double vertical, double pivot, double horizontal) {
+        //moveBotOld((in/12d) * 73.6770894730908, vertical, pivot, horizontal);
+        moveBotOld(in*ticsPerInch, vertical, pivot, horizontal);
+    }
+
 }

@@ -4,12 +4,10 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.teamcode.Base;
-
-import java.util.Arrays;
+import org.firstinspires.ftc.teamcode.RobotBase;
 
 @TeleOp(name = "TestMecanum")
-public class TestMecanum extends Base {
+public class TestMecanum extends RobotBase {
 
     //TEMP TEST CONSISTENT DRIVE
     static final double HD_COUNTS_PER_REV = 537.7;
@@ -28,7 +26,6 @@ public class TestMecanum extends Base {
     boolean yToggle = false;
     @Override
     public void loop() {
-        super.loop();
 
         if (gamepad1.a) {
             driveSystem.getAllMotors().forEach(

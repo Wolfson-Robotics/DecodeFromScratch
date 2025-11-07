@@ -1,9 +1,8 @@
 package org.firstinspires.ftc.teamcode.debug.toauto;
 
-import static org.firstinspires.ftc.teamcode.debug.util.Async.sleep;
 import static org.firstinspires.ftc.teamcode.debug.util.GeneralUtils.boolSign;
 
-import org.firstinspires.ftc.teamcode.debug.ReplayBase;
+import org.firstinspires.ftc.teamcode.debug.ReplayRobotBase;
 import org.firstinspires.ftc.teamcode.debug.HardwareSnapshot;
 import org.firstinspires.ftc.teamcode.debug.handlers.DcMotorExHandler;
 import org.firstinspires.ftc.teamcode.debug.handlers.HardwareComponentHandler;
@@ -17,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner;
 
-public class ReplayToInstructions extends ReplayBase {
+public class ReplayToInstructions extends ReplayRobotBase {
 
     private static final double POWER_THRESHOLD = 0.1, VEC_SIMILARITY = 0.995;
     private static final long DISTINCT_DURATION = (long) (0.1*10E9);

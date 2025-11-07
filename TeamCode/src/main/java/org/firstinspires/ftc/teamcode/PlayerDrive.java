@@ -3,20 +3,10 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp(name = "PlayerDrive")
-public class PlayerDrive extends Base {
-
-    @Override
-    public void init() {
-        super.init();
-    }
+public class PlayerDrive extends RobotBase {
 
     @Override
     public void loop() {
-        gamepad1Loop();
-        gamepad2Loop();
-    }
-
-    private void gamepad1Loop() {
         driveSystem.drive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
 
         //TEMP: Increase launcher speed values
@@ -59,7 +49,5 @@ public class PlayerDrive extends Base {
         telemetry.addData("Launcher ACTUAL Power: ", launcher.motor.getPower());
         telemetry.update();
     }
-
-    private void gamepad2Loop() {}
 
 }

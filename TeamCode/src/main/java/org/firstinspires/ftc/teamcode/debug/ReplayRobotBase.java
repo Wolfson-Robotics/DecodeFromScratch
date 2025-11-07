@@ -1,10 +1,5 @@
 package org.firstinspires.ftc.teamcode.debug;
 
-import static org.firstinspires.ftc.teamcode.debug.util.Async.sleep;
-
-import org.firstinspires.ftc.teamcode.Base;
-import org.firstinspires.ftc.teamcode.debug.HardwareSnapshot;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -14,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public abstract class ReplayBase extends TranslationBase {
+public abstract class ReplayRobotBase extends TranslationRobotBase {
 
     protected List<HardwareSnapshot> mmSnapshots, omSnapshots;
 

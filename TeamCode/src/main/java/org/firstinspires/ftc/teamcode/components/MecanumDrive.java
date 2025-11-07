@@ -28,6 +28,7 @@ public class MecanumDrive {
         this.lf.setDirection(DcMotorSimple.Direction.REVERSE);
         this.lb.setDirection(DcMotorSimple.Direction.REVERSE);
     }
+
     public MecanumDrive(HardwareMap map, String lf, String lb, String rf, String rb) {
         this(
             (DcMotorEx) map.get(lf),
