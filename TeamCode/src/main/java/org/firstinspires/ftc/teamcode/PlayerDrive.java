@@ -2,11 +2,26 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+
 @TeleOp(name = "PlayerDrive")
 public class PlayerDrive extends RobotBase {
 
+    private int prevPos = 0;
+    @Override
+    public void init() {
+        super.init();
+        this.prevPos = lf.getCurrentPosition();
+
+    }
+
     @Override
     public void loop() {
+        gamepad1Loop();
+        gamepad2Loop();
+    }
+
+    private void gamepad1Loop() {
         driveSystem.drive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
 
         //TEMP: Increase launcher speed values
@@ -27,11 +42,29 @@ public class PlayerDrive extends RobotBase {
         double PRINCIPAL_POWER = 0.61;
         double voltage = getVoltage();
         double res = scaleVoltPF(voltage);
-        double res2 = 0.7*res;
+        double res2 = 0.7 * res;
 
-        launcher.MAX_POWER = PRINCIPAL_POWER*res;
+        launcher.MAX_POWER = PRINCIPAL_POWER * res;
         launcher.togglePower(ACTIVE_LAUNCHER, launcher.MAX_POWER);
-//        launcher.
+        if (gamepad1.dpad_down) {
+            launcher.motor.setVelocity(480, AngleUnit.DEGREES);
+        } else if (gamepad1.dpad_up) {
+            launcher.motor.setVelocity(0, AngleUnit.DEGREES);
+        }
+
+        double MIN_POS = 0.2D;
+        double MAX_POS = 1D;
+        if (gamepad1.y) {
+            //TODO: Elijah fix this it sucks and didn't work
+            //0 is hitting the bar, 1 is not hitting the bar
+            double pos = 1D;
+            if (tongue.getPosition() >= MAX_POS - 0.05) {
+                pos = MIN_POS;
+            } else {
+                pos = MAX_POS;
+            }
+            tongue.setPosition(pos);
+        }
 
         intake.togglePower(ACTIVE_INTAKE, intake.MAX_POWER);
 
@@ -47,7 +80,14 @@ public class PlayerDrive extends RobotBase {
         telemetry.addData("voltage", voltage);
         telemetry.addData("Launcher Power: ", launcher.MAX_POWER);
         telemetry.addData("Launcher ACTUAL Power: ", launcher.motor.getPower());
+        telemetry.addData("lf traveled", lf.getCurrentPosition() - prevPos);
+        telemetry.addData("lf power", lf.getPower());
+        telemetry.addData("rf power", rf.getPower());
+        telemetry.addData("lb power", lb.getPower());
+        telemetry.addData("rb power", rb.getPower());
         telemetry.update();
     }
+
+    private void gamepad2Loop() {}
 
 }

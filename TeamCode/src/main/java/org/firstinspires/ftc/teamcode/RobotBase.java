@@ -5,6 +5,7 @@ import android.os.Environment;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -22,6 +23,8 @@ public abstract class RobotBase extends OpMode {
     public MecanumDrive driveSystem;
     public Roller<DcMotorEx> launcher;
     public Roller intake, leftSpinner, centerSpinner;
+
+    public Servo tongue;
 
     public VisionPortalCamera camera;
     public AprilTagProcessor aTagProc;
@@ -45,6 +48,7 @@ public abstract class RobotBase extends OpMode {
         rb = hardwareMap.get(DcMotorEx.class, "rb_drive");
 
         driveSystem = new MecanumDrive(lf, lb, rf, rb);
+        tongue = (Servo) hardwareMap.get("tongue");
         driveSystem.imu = imu;
         launcher = new Roller<>(hardwareMap, "launcher");
         intake = new Roller<>(hardwareMap, "intake");

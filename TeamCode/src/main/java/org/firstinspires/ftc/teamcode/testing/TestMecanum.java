@@ -35,7 +35,7 @@ public class TestMecanum extends RobotBase {
             //Need to provide IMU for this to work: (also test it)
             driveSystem.driveFieldCentric(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
         } else if (gamepad1.x) {
-            driveSystem.driveForSeconds(1, 0, 3); //Should pause and drive for 3 seconds
+            driveSystem.driveForSeconds((float)0.1, 0, 3); //Should pause and drive for 3 seconds
         } else if (gamepad1.y && !yToggle) {
             yToggle = true;
             driveDistance(3);
@@ -46,13 +46,12 @@ public class TestMecanum extends RobotBase {
     public void driveDistance(float yIn) {
         int targetPosition = (int)(yIn * DRIVE_COUNTS_PER_IN) + driveSystem.lb.getCurrentPosition();
 
-        driveSystem.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        driveSystem.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
         //TO TEST: change the power value from different ones to see if it goes the same distance
         driveSystem.getAllMotors().forEach(
                 n -> {
                     n.setTargetPosition(targetPosition);
+                    driveSystem.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    driveSystem.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     n.setPower(0.4);
                 }
         );
