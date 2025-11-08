@@ -3,16 +3,19 @@ package org.firstinspires.ftc.teamcode;
 import android.os.Environment;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.components.Roller;
 import org.firstinspires.ftc.teamcode.components.MecanumDrive;
 import org.firstinspires.ftc.teamcode.components.ServoEx;
 import org.firstinspires.ftc.teamcode.components.camera.VisionPortalCamera;
+import org.firstinspires.ftc.teamcode.debug.util.Async;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.Optional;
@@ -54,6 +57,8 @@ public abstract class RobotBase extends OpMode {
         tongue.MIN_POSITION = 0.4D;
 
         launcher = new Roller<>(hardwareMap, "launcher");
+        launcher.motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         intake = new Roller<>(hardwareMap, "intake");
         intake.SWAP_DIRECTION = true;
         leftSpinner = new Roller<>(hardwareMap, "left_spin");
@@ -156,18 +161,23 @@ public abstract class RobotBase extends OpMode {
 
     }
 
-    protected double degConv = 2.5555555555555555555555555555556;
-    protected void turnBot(double degrees) {
+//    protected double degConv = 2.5555555555555555555555555555556;
+    protected double degConv = 0.51;
+    protected void turnBot(double power, double degrees) {
         // 13.62 inches is default robot length
         double robotLength = 13.62;
         double distUnit = (robotLength) / (Math.cos(45));
         double distIN = (Math.abs((distUnit * ((degrees*1.75))) / 90))*degConv;
         int motorTics;
         int pivot = (degrees >= 0) ? 1 : -1;
-        rf.setPower(powerFactor * (-pivot));
-        rb.setPower(powerFactor * (-pivot));
-        lf.setPower(powerFactor * (pivot));
-        lb.setPower(powerFactor * (pivot));
+//        rf.setPower(powerFactor * (-pivot));
+//        rb.setPower(powerFactor * (-pivot));
+//        lf.setPower(powerFactor * (pivot));
+//        lb.setPower(powerFactor * (pivot));
+        rf.setPower(power * (-pivot));
+        rb.setPower(power * (-pivot));
+        lf.setPower(power * (pivot));
+        lb.setPower(power * (pivot));
         motorTics = lf.getCurrentPosition() + (int) Math.round((distIN * ticsPerInch)* pivot);
         if (pivot == 1) {
             while ((lf.getCurrentPosition() < motorTics)) {
@@ -187,5 +197,106 @@ public abstract class RobotBase extends OpMode {
 
 
     }
+
+
+
+
+    int count = 0;
+    protected void setLauncher(double velocity) {
+//        telemetry.addLine("ran launcher");
+//        telemetry.update();
+//        try {
+//            Thread.sleep(200);
+//        } catch (Exception e) {}
+        launcher.motor.setVelocity(velocity);
+        double vel = launcher.motor.getVelocity();
+        while (Math.abs(vel - velocity) > 20) {
+//            launcher.motor.setVelocity(velocity);
+            vel = launcher.motor.getVelocity();
+            telemetry.addData("vel" + count, vel);
+            telemetry.update();
+//            Thread.yield();
+            try {Thread.sleep(110); } catch (Exception e) {}
+            Thread.yield();
+        }
+        telemetry.addData("vel" + count, vel);
+        telemetry.update();
+        count++;
+    }
+    protected void prepareShoot() {
+        leftSpinner.motor.setPower(-1);
+        centerSpinner.motor.setPower(1);
+    }
+    protected void shootBetter(double velocity) {
+        setLauncher(velocity);
+//        try {
+//            Thread.sleep(500);
+//        } catch (InterruptedException e) {
+//            throw new RuntimeException(e);
+//        }
+        prepareShoot();
+        try {
+            Thread.sleep(2000);
+        } catch (Exception e) {}
+        leftSpinner.motor.setPower(0);
+        centerSpinner.motor.setPower(0);
+        setLauncher(velocity);
+//        try {
+//            Thread.sleep(500);
+//        } catch (Exception e) {}
+        prepareShoot();
+        try {
+            Thread.sleep(2000);
+        } catch (Exception e) {}
+        leftSpinner.motor.setPower(0);
+        centerSpinner.motor.setPower(0);
+        setLauncher(velocity);
+//        try {
+//            Thread.sleep(500);
+//        } catch (Exception e) {}
+        prepareShoot();
+        try {
+            Thread.sleep(2000);
+        } catch (Exception e) {}
+//        try {
+//            Thread.sleep(7000);
+//        } catch (Exception e) {}
+        stopShoot();
+        launcher.motor.setPower(0);
+
+    }
+    protected void shoot(double velocity) {
+        setLauncher(velocity);
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+//            throw new RuntimeException(e);
+        }
+//        Async.sleep(200);
+        prepareShoot();
+//        Async.sleep(200);
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+//            throw new RuntimeException(e);
+        }
+        while (Math.abs(launcher.motor.getVelocity() - velocity) <= 50) {Thread.yield();}
+//        Async.sleep(200);
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+//            throw new RuntimeException(e);
+        }
+//        setLauncher(velocity);
+//        Async.sleep(200);
+//        prepareShoot();
+    }
+    protected void stopShoot() {
+//        setLauncher(0);
+        launcher.motor.setPower(0);
+        leftSpinner.motor.setPower(0);
+        centerSpinner.motor.setPower(0);
+    }
+
 
 }
