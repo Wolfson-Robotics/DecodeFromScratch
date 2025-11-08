@@ -49,6 +49,7 @@ public abstract class RobotBase extends OpMode {
         driveSystem.imu = imu;
 
         tongue = new ServoEx(hardwareMap, "tongue");
+        tongue.servo.setDirection(Servo.Direction.REVERSE);
         tongue.MAX_POSITION = 0.8D;
         tongue.MIN_POSITION = 0.4D;
 
