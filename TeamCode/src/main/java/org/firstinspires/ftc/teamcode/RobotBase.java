@@ -12,7 +12,6 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.components.Roller;
 import org.firstinspires.ftc.teamcode.components.MecanumDrive;
 import org.firstinspires.ftc.teamcode.components.camera.VisionPortalCamera;
-import org.firstinspires.ftc.teamcode.debug.util.Async;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.Optional;
@@ -104,11 +103,9 @@ public abstract class RobotBase extends OpMode {
 
 
 
-    double ticsPerInch = 1;
-    double intCon = 1;
-    double powerFactor = 1;
-    // moveBotOld (uses tics-based motion)
-    protected void moveBotOld(double distIN, double vertical, double pivot, double horizontal) {
+    protected double ticsPerInch = 38;
+    protected double powerFactor = 1;
+    protected void moveBot(double distIN, double vertical, double pivot, double horizontal) {
 
         // 23 motor tics = 1 IN
         int motorTics;
@@ -121,7 +118,7 @@ public abstract class RobotBase extends OpMode {
 
         if (horizontal != 0) {
             posNeg = (horizontal > 0) ? 1 : -1;
-            motorTics = lf.getCurrentPosition() + (int) ((distIN * intCon) * (posNeg));
+            motorTics = lf.getCurrentPosition() + (int) ((distIN * ticsPerInch) * (posNeg));
             if (posNeg == 1) {
                 // right goes negative
                 while ((lf.getCurrentPosition() < motorTics)) {
@@ -134,8 +131,8 @@ public abstract class RobotBase extends OpMode {
                 }
             }
         } else {
-            posNeg = vertical >= 0 ? -1 : 1;
-            motorTics = rf.getCurrentPosition() + (int) ((distIN * intCon) * posNeg);
+            posNeg = vertical >= 0 ? 1 : -1;
+            motorTics = rf.getCurrentPosition() + (int) ((distIN * ticsPerInch) * posNeg);
             if (posNeg == -1) {
                 while (rf.getCurrentPosition() > motorTics) {
                     Thread.yield();
@@ -155,10 +152,36 @@ public abstract class RobotBase extends OpMode {
 
     }
 
-    // wrapper
-    protected void moveBot(double in, double vertical, double pivot, double horizontal) {
-        //moveBotOld((in/12d) * 73.6770894730908, vertical, pivot, horizontal);
-        moveBotOld(in*ticsPerInch, vertical, pivot, horizontal);
+    protected double degConv = 2.5555555555555555555555555555556;
+    protected void turnBot(double degrees) {
+        // 13.62 inches is default robot length
+        double robotLength = 13.62;
+        double distUnit = (robotLength) / (Math.cos(45));
+        double distIN = (Math.abs((distUnit * ((degrees*1.75))) / 90))*degConv;
+        int motorTics;
+        int pivot = (degrees >= 0) ? 1 : -1;
+        rf.setPower(powerFactor * (-pivot));
+        rb.setPower(powerFactor * (-pivot));
+        lf.setPower(powerFactor * (pivot));
+        lb.setPower(powerFactor * (pivot));
+        motorTics = lf.getCurrentPosition() + (int) Math.round((distIN * ticsPerInch)* pivot);
+        if (pivot == 1) {
+            while ((lf.getCurrentPosition() < motorTics)) {
+                Thread.yield();
+            }
+        }
+        if (pivot == -1) {
+            while ((lf.getCurrentPosition() > motorTics)) {
+                Thread.yield();
+            }
+        }
+//        removePower();
+        lf.setPower(0);
+        lb.setPower(0);
+        rf.setPower(0);
+        rb.setPower(0);
+
+
     }
 
 }
