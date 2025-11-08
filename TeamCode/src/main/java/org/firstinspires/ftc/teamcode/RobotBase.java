@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.components.Roller;
 import org.firstinspires.ftc.teamcode.components.MecanumDrive;
+import org.firstinspires.ftc.teamcode.components.ServoEx;
 import org.firstinspires.ftc.teamcode.components.camera.VisionPortalCamera;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
@@ -23,7 +24,7 @@ public abstract class RobotBase extends OpMode {
     public Roller<DcMotorEx> launcher;
     public Roller intake, leftSpinner, centerSpinner;
 
-    public Servo tongue;
+    public ServoEx tongue;
 
     public VisionPortalCamera camera;
     public AprilTagProcessor aTagProc;
@@ -39,16 +40,18 @@ public abstract class RobotBase extends OpMode {
     //If overriding init(), make to sure call super.init();
     @Override
     public void init() {
-        imu = (IMU) hardwareMap.get("imu");
-
         lf = hardwareMap.get(DcMotorEx.class, "lf_drive");
         lb = hardwareMap.get(DcMotorEx.class, "lb_drive");
         rf = hardwareMap.get(DcMotorEx.class, "rf_drive");
         rb = hardwareMap.get(DcMotorEx.class, "rb_drive");
-
         driveSystem = new MecanumDrive(lf, lb, rf, rb);
-        tongue = (Servo) hardwareMap.get("tongue");
+        imu = (IMU) hardwareMap.get("imu");
         driveSystem.imu = imu;
+
+        tongue = new ServoEx(hardwareMap, "tongue");
+        tongue.MAX_POSITION = 0.8D;
+        tongue.MIN_POSITION = 0.4D;
+
         launcher = new Roller<>(hardwareMap, "launcher");
         intake = new Roller<>(hardwareMap, "intake");
         intake.SWAP_DIRECTION = true;

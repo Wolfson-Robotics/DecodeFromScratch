@@ -33,7 +33,6 @@ public class TestMecanum extends RobotBase {
             );
         } else if (gamepad1.b) {
             //Need to provide IMU for this to work: (also test it)
-            driveSystem.driveFieldCentric(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
         } else if (gamepad1.x) {
             driveSystem.driveForSeconds((float)0.1, 0, 3); //Should pause and drive for 3 seconds
         } else if (gamepad1.y && !yToggle) {

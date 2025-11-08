@@ -81,8 +81,6 @@ public class PlayerDrive extends RobotBase {
         telemetry.addData("Launcher Power: ", launcher.MAX_POWER);
         telemetry.addData("Launcher ACTUAL Power: ", launcher.motor.getPower());
         telemetry.addData("lf traveled", lf.getCurrentPosition() - prevPos);
-        telemetry.addData("rf traveled", rf.getCurrentPosition() - prevPos);
-
         telemetry.addData("lf power", lf.getPower());
         telemetry.addData("rf power", rf.getPower());
         telemetry.addData("lb power", lb.getPower());

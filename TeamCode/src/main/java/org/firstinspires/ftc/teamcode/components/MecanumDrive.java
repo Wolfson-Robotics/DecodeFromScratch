@@ -69,32 +69,6 @@ public class MecanumDrive {
         lb.setPower(leftBackPower);
     }
 
-    /** Drive the mecanum system relative to the field.
-     *  Meaning the movement of the mecanum system won't be dependent on the robot's rotation
-     * @param y Forward/Backwards
-     * @param x Left/Right
-     * @param rotation Rotate
-     */
-    public void driveFieldCentric(float y, float x, float rotation) {
-        if (imu == null) {
-            throw new IllegalStateException(
-                    "IMU was not provided, cannot use driveFieldCentric. Please provide an IMU."
-            );
-        }
-
-        double theta = Math.atan2(y, x);
-        double r = Math.hypot(x, y);
-
-        theta = AngleUnit.normalizeRadians(
-                theta - imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES)
-        );
-
-        double newX = r * Math.sin(theta);
-        double newY = r * Math.cos(theta);
-
-        this.drive((float) newY, (float) newX, rotation);
-    }
-
     /**
      * Drive a certain amount of time <br>
      * ||WARNING: WILL PAUSE THREAD OF EXECUTION FOR THE TIME||
