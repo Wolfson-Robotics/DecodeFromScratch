@@ -3,11 +3,11 @@ package org.firstinspires.ftc.teamcode.testing;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.teamcode.TURNEXPERIMENT;
+import org.firstinspires.ftc.teamcode.AutoBase;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
-@Autonomous(name = "TestAuto")
-public class TestAuto extends TURNEXPERIMENT {
+@Autonomous(name = "TestAprilTags")
+public class TestAprilTags extends AutoBase {
 
 
     @Override

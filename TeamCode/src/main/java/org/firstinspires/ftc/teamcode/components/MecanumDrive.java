@@ -102,4 +102,101 @@ public class MecanumDrive {
         rb.setMode(mode);
         rf.setMode(mode);
     }
+
+
+
+
+
+    /*
+    --------------------------------------
+    Autonomous Specific Movement Functions
+    --------------------------------------
+     */
+
+    private double ticsPerInch = 38;
+    public void moveBotInches(double distIN, double vertical, double pivot, double horizontal) {
+
+        // 23 motor tics = 1 IN
+        int motorTics;
+        int posNeg = (vertical >= 0) ? 1 : -1;
+
+        rf.setPower(powerFactor * (-pivot + (vertical - horizontal)));
+        rb.setPower(powerFactor * (-pivot + vertical + horizontal));
+        lf.setPower(powerFactor * (pivot + vertical + horizontal));
+        lb.setPower(powerFactor * (pivot + (vertical - horizontal)));
+
+        if (horizontal != 0) {
+            posNeg = (horizontal > 0) ? 1 : -1;
+            motorTics = lf.getCurrentPosition() + (int) ((distIN * ticsPerInch) * (posNeg));
+            if (posNeg == 1) {
+                // right goes negative
+                while ((lf.getCurrentPosition() < motorTics)) {
+                    Thread.yield();
+                }
+            } else {
+                // left goes positive
+                while ((lf.getCurrentPosition() > motorTics)) {
+                    Thread.yield();
+                }
+            }
+        } else {
+            posNeg = vertical >= 0 ? 1 : -1;
+            motorTics = rf.getCurrentPosition() + (int) ((distIN * ticsPerInch) * posNeg);
+            if (posNeg == -1) {
+                while (rf.getCurrentPosition() > motorTics) {
+                    Thread.yield();
+                }
+            } else {
+                while ((rf.getCurrentPosition() < motorTics)) {
+                    Thread.yield();
+                }
+            }
+
+        }
+//        removePower();
+        lf.setPower(0);
+        lb.setPower(0);
+        rf.setPower(0);
+        rb.setPower(0);
+
+    }
+
+    private double degConv = 0.51;
+    public void turnBot(double power, double degrees) {
+        // 13.62 inches is default robot length
+        double robotLength = 13.62;
+        double distUnit = (robotLength) / (Math.cos(45));
+        double distIN = (Math.abs((distUnit * ((degrees*1.75))) / 90))*degConv;
+        int motorTics;
+        int pivot = (degrees >= 0) ? 1 : -1;
+//        rf.setPower(powerFactor * (-pivot));
+//        rb.setPower(powerFactor * (-pivot));
+//        lf.setPower(powerFactor * (pivot));
+//        lb.setPower(powerFactor * (pivot));
+        rf.setPower(power * (-pivot));
+        rb.setPower(power * (-pivot));
+        lf.setPower(power * (pivot));
+        lb.setPower(power * (pivot));
+        motorTics = lf.getCurrentPosition() + (int) Math.round((distIN * ticsPerInch)* pivot);
+        if (pivot == 1) {
+            while ((lf.getCurrentPosition() < motorTics)) {
+                Thread.yield();
+            }
+        }
+        if (pivot == -1) {
+            while ((lf.getCurrentPosition() > motorTics)) {
+                Thread.yield();
+            }
+        }
+//        removePower();
+        lf.setPower(0);
+        lb.setPower(0);
+        rf.setPower(0);
+        rb.setPower(0);
+
+
+    }
+
+
+
 }

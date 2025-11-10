@@ -1,22 +1,16 @@
-package org.firstinspires.ftc.teamcode.currentautos;
+package org.firstinspires.ftc.teamcode.autos;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.teamcode.AutoBase;
 import org.firstinspires.ftc.teamcode.RobotBase;
-import org.firstinspires.ftc.teamcode.debug.util.Async;
 
 //@Autonomous(name = "BlueAutoClose", group = "Auto")
-public class BlueAutoClose extends RobotBase {
+public class BlueAutoClose extends AutoBase {
 
     @Override
     public void init() {
         super.init();
-        lf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        lb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        driveSystem.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     @Override
