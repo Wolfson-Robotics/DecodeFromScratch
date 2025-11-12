@@ -24,7 +24,7 @@ public class RedAutoFar extends AutoBase {
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {}
-        shoot(1570);
+        shootBetter(1570);
         launcher.motor.setPower(0);
         stopShoot();
         moveBot(16, 0.2, 0, 0);

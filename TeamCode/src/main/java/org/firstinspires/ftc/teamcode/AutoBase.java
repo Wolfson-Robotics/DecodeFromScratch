@@ -70,7 +70,7 @@ public abstract class AutoBase extends RobotBase {
         centerSpinner.motor.setPower(1);
     }
 
-    protected void shoot(double velocity) {
+    protected void shootBetter(double velocity) {
         for (int i = 0; i < 2; i++) {
             setLauncher(velocity);
             prepareShoot();

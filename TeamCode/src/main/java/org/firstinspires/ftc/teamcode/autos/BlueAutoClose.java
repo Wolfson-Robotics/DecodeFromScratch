@@ -1,9 +1,6 @@
 package org.firstinspires.ftc.teamcode.autos;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
-
 import org.firstinspires.ftc.teamcode.AutoBase;
-import org.firstinspires.ftc.teamcode.RobotBase;
 
 //@Autonomous(name = "BlueAutoClose", group = "Auto")
 public class BlueAutoClose extends AutoBase {
@@ -24,9 +21,9 @@ public class BlueAutoClose extends AutoBase {
         }
         turnBot(0.2,  -29);
 //        turnBot()
-        shoot(1610);
-        shoot(1610);
-        shoot(1610);
+        shootBetter(1610);
+        shootBetter(1610);
+        shootBetter(1610);
         launcher.motor.setPower(0);
         stopShoot();
     }

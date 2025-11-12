@@ -16,7 +16,6 @@ public class PlayerDrive extends RobotBase {
         super.init();
         this.pidfCoefficients = launcher.motor.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
         this.prevPos = lf.getCurrentPosition();
-
     }
 
     @Override
@@ -74,6 +73,9 @@ public class PlayerDrive extends RobotBase {
         leftSpinner.togglePower(SPIN_SPINNERS, leftSpinner.MAX_POWER);
         centerSpinner.togglePower(SPIN_SPINNERS, centerSpinner.MAX_POWER);
 
+
+
+        //Telemetry + Debug Data
         telemetry.addData("leftSpinner power", leftSpinner.motor.getPower());
         telemetry.addData("rightSpinner power", leftSpinner.motor.getPower());
         telemetry.addData("scale/res", res);
