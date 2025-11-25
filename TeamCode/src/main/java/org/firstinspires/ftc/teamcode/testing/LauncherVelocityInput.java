@@ -20,10 +20,10 @@ public class LauncherVelocityInput extends RobotBase {
     public void loop() {
             double testD = input.getInput();
             if (Double.isNaN(testD)) return;
-            launcher.motor.setVelocity(testD, AngleUnit.DEGREES);
+            launcher.motor.setVelocity(testD);
             pTelem.addLine("Reaching Velocity");
             pTelem.update();
-            while (Math.abs(launcher.motor.getVelocity(AngleUnit.DEGREES) - testD) <= 10) {
+            while (Math.abs(launcher.motor.getVelocity() - testD) <= 10) {
                 Thread.yield();
             }
             pTelem.addLine("Reached Velocity");
