@@ -25,9 +25,7 @@ public abstract class RobotBase extends OpMode {
     //Components
     public MecanumDrive driveSystem;
     public Roller<DcMotorEx> launcher;
-    public Roller intake, leftSpinner, centerSpinner;
-
-    public ServoEx tongue;
+    public Roller intake, transfer, transport;
 
     public VisionPortalCamera camera;
     public AprilTagProcessor aTagProc;
@@ -38,28 +36,20 @@ public abstract class RobotBase extends OpMode {
     protected final String storagePath = Environment.getExternalStorageDirectory().getPath();
     protected final String logsPath = storagePath + "/Logs/";
 
-    public DcMotorEx lf, lb, rf, rb;
 
     //If overriding init(), make to sure call super.init();
     @Override
     public void init() {
-        driveSystem = new MecanumDrive(lf, lb, rf, rb);
+        driveSystem = new MecanumDrive(hardwareMap, "lf_drive", "lb_drive", "rf_drive", "rb_drive");
         imu = (IMU) hardwareMap.get("imu");
         driveSystem.imu = imu;
 
-        tongue = new ServoEx(hardwareMap, "tongue");
-        tongue.servo.setDirection(Servo.Direction.REVERSE);
-        tongue.MAX_POSITION = 0.8D;
-        tongue.MIN_POSITION = 0.4D;
-
         launcher = new Roller<>(hardwareMap, "launcher");
+        launcher.SWAP_DIRECTION = true;
         launcher.motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         intake = new Roller<>(hardwareMap, "intake");
         intake.SWAP_DIRECTION = true;
-        leftSpinner = new Roller<>(hardwareMap, "left_spin");
-        leftSpinner.SWAP_DIRECTION = true;
-        centerSpinner = new Roller<>(hardwareMap, "center_spin");
     }
 
     //By default this will not be called in init() of base, so extending classes have to call it to use it
