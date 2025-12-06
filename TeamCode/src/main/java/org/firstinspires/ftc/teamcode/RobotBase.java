@@ -5,6 +5,7 @@ import android.os.Environment;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
@@ -46,15 +47,18 @@ public abstract class RobotBase extends OpMode {
         driveSystem.imu = imu;
 
         launcher = new Roller(hardwareMap, "launcher");
-        launcher.SWAP_DIRECTION = true;
+        launcher.motor.setDirection(DcMotorSimple.Direction.REVERSE);
         launcher.motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         transfer = new Roller(hardwareMap, "transfer");
+        transfer.MAX_POWER = 0.8;
         transport = new Roller(hardwareMap, "transport");
+        transport.MAX_POWER = 0.8;
 
         stopper = new ServoEx(hardwareMap, "stopper");
-        stopper.MIN_POSITION = 0.2;
-        stopper.MAX_POSITION = 0.5;
+        stopper.servo.setDirection(Servo.Direction.REVERSE);
+        stopper.MIN_POSITION = 0.27;
+        stopper.MAX_POSITION = 0.4;
 
         intake = new Roller(hardwareMap, "intake");
     }

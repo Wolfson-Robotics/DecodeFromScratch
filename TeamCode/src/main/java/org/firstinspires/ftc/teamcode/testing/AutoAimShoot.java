@@ -65,7 +65,7 @@ public class AutoAimShoot extends AutoBase {
 
         Async.sleep(5000);
         setLauncher(predictedVelocity);
-        prepareShoot();
+        runFeed();
         Async.sleep(3000);
         stopShoot();
     }

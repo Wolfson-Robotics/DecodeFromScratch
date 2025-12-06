@@ -1,15 +1,19 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.testing;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
+import org.firstinspires.ftc.teamcode.AutoBase;
+import org.firstinspires.ftc.teamcode.RobotBase;
+import org.firstinspires.ftc.teamcode.debug.util.Async;
+
 import java.util.ArrayList;
 import java.util.List;
 
 @TeleOp(name = "LauncherAutoTune")
-public class LauncherAutoTune extends RobotBase {
+public class LauncherAutoTune extends AutoBase {
 
     /*
      * Standalone OpMode: launcher characterization + simple human-in-loop P autotune.
@@ -36,9 +40,9 @@ public class LauncherAutoTune extends RobotBase {
 
     // characterization parameters
     private final double[] CHAR_POWERS = new double[] { 0.2, 0.4, 0.6, 0.8 };
-    private final long CHAR_SETTLE_MS = 700;
-    private final int CHAR_SAMPLES = 8;
-    private final long CHAR_SAMPLE_INTERVAL_MS = 60;
+    private final long CHAR_SETTLE_MS = 3000;
+    private final int CHAR_SAMPLES = 4;
+    private final long CHAR_SAMPLE_INTERVAL_MS = 1000;
     private final List<Double> charVels = new ArrayList<>();
     private final List<Double> charPwr = new ArrayList<>();
     private int charIndex = 0;
@@ -240,6 +244,7 @@ public class LauncherAutoTune extends RobotBase {
         telemetry.addData("State", state.name());
         telemetry.addData("Launcher Vel", launcher.motor.getVelocity());
         telemetry.update();
+
     }
 
     // blocking sample average helper (short blocking window)

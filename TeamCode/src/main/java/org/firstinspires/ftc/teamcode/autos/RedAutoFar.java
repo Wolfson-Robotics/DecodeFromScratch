@@ -20,11 +20,11 @@ public class RedAutoFar extends AutoBase {
         } catch (InterruptedException e) {
 //            throw new RuntimeException(e);
         }
-        turnBot(0.2,  28);
+        turnBot(0.2,  24); //prev:28
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {}
-        shootBetter(1570);
+        shootBetter(1710);
         launcher.motor.setPower(0);
         stopShoot();
         moveBot(16, 0.2, 0, 0);
@@ -32,7 +32,7 @@ public class RedAutoFar extends AutoBase {
 
     @Override
     public void loop() {
-Thread.yield();
+        Thread.yield();
     }
 
 }

@@ -15,7 +15,7 @@ public class BlueAutoFar extends AutoBase {
         } catch (InterruptedException e) {
 //            throw new RuntimeException(e);
         }
-        turnBot(0.2,  -21.6);
+        turnBot(0.2,  -25);
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {}

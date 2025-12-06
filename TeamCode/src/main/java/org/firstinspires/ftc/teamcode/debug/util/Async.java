@@ -39,7 +39,9 @@ public class Async {
     public static void sleep(long ms) {
         try {
             Thread.sleep(ms);
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            System.out.println("failed to sleep");
+        }
     }
 
 }
