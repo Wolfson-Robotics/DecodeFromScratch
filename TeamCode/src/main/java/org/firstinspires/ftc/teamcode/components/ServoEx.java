@@ -18,10 +18,19 @@ public class ServoEx<T extends Servo> {
     }
 
     public void applyPosition(double position) {
+        //TODO: return if it has already reached position or is stuck
+        //^^^^^: Seems impossible as of 12/6/25
         position = Math.min(position, MAX_POSITION);
         position = Math.max(position, MIN_POSITION);
         servo.setPosition(position);
     }
+
+/*    public void applyAngle(double angle) {
+        //TODO: Map position to angle
+        position = Math.min(position, MAX_POSITION);
+        position = Math.max(position, MIN_POSITION);
+        servo.setPosition(position);
+    }*/
 
     /**
     Toggle between min and max position

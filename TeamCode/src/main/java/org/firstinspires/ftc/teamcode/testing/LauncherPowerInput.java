@@ -25,8 +25,8 @@ public class LauncherPowerInput extends RobotBase {
         Async.sleep(6000);
         pTelem.addLine("Reached power");
         pTelem.update();
-        leftSpinner.motor.setPower(1);
-        centerSpinner.motor.setPower(1);
+        //leftSpinner.motor.setPower(1);
+        //centerSpinner.motor.setPower(1);
         Async.sleep(5000);
         launcher.motor.setPower(0);
         Async.sleep(6000);

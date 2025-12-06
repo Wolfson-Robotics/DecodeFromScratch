@@ -26,6 +26,7 @@ public abstract class RobotBase extends OpMode {
     public MecanumDrive driveSystem;
     public Roller<DcMotorEx> launcher;
     public Roller intake, transfer, transport;
+    public ServoEx stopper;
 
     public VisionPortalCamera camera;
     public AprilTagProcessor aTagProc;
@@ -44,12 +45,18 @@ public abstract class RobotBase extends OpMode {
         imu = (IMU) hardwareMap.get("imu");
         driveSystem.imu = imu;
 
-        launcher = new Roller<>(hardwareMap, "launcher");
+        launcher = new Roller(hardwareMap, "launcher");
         launcher.SWAP_DIRECTION = true;
         launcher.motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        intake = new Roller<>(hardwareMap, "intake");
-        intake.SWAP_DIRECTION = true;
+        transfer = new Roller(hardwareMap, "transfer");
+        transport = new Roller(hardwareMap, "transport");
+
+        stopper = new ServoEx(hardwareMap, "stopper");
+        stopper.MIN_POSITION = 0.2;
+        stopper.MAX_POSITION = 0.5;
+
+        intake = new Roller(hardwareMap, "intake");
     }
 
     //By default this will not be called in init() of base, so extending classes have to call it to use it

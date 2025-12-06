@@ -66,8 +66,8 @@ public abstract class AutoBase extends RobotBase {
     }
 
     protected void prepareShoot() {
-        leftSpinner.motor.setPower(-1);
-        centerSpinner.motor.setPower(1);
+        //leftSpinner.motor.setPower(-1);
+        //centerSpinner.motor.setPower(1);
     }
 
     protected void shootBetter(double velocity) {
@@ -78,8 +78,8 @@ public abstract class AutoBase extends RobotBase {
                 Thread.sleep(2000);
             } catch (Exception e) {}
 
-            leftSpinner.motor.setPower(0);
-            centerSpinner.motor.setPower(0);
+            //leftSpinner.motor.setPower(0);
+            //centerSpinner.motor.setPower(0);
         }
 
         stopShoot();
@@ -88,8 +88,8 @@ public abstract class AutoBase extends RobotBase {
 
     public void stopShoot() {
         launcher.motor.setPower(0);
-        leftSpinner.motor.setPower(0);
-        centerSpinner.motor.setPower(0);
+        //leftSpinner.motor.setPower(0);
+        //centerSpinner.motor.setPower(0);
     }
 
     //Wrappers

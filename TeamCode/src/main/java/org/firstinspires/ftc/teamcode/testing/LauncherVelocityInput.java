@@ -28,8 +28,8 @@ public class LauncherVelocityInput extends RobotBase {
             }
             pTelem.addLine("Reached Velocity");
             pTelem.update();
-            leftSpinner.motor.setPower(1);
-            centerSpinner.motor.setPower(1);
+            //leftSpinner.motor.setPower(1);
+            //centerSpinner.motor.setPower(1);
             Async.sleep(5000);
             launcher.motor.setVelocity(0);
             Async.sleep(5000);

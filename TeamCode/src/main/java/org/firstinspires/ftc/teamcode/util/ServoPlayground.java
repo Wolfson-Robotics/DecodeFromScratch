@@ -168,7 +168,7 @@ public class ServoPlayground extends RobotBase {
                 persistentTelemetry.update();
                 switch (servoName) {
                     case "tongue":
-                        tongue.servo.setPosition(servoPos);
+                        //tongue.servo.setPosition(servoPos);
                         break;
                 }
                 persistentTelemetry.addLine("Done moving");

@@ -35,31 +35,23 @@ public class PlayerDrive extends RobotBase {
         else { driveSystem.powerFactor = 1.; }
     }
 
+    /* Intake, Launcher, Transfer
+       --------------------------
+    */
     private void gamepad2Loop() {
-        /* Intake, Launcher, Transfer
-           --------------------------
-         */
-        if (gamepad2.dpad_down) {
-            settingVelocity = true;
-            launcher.motor.setVelocity(1600);
-        } else if (gamepad2.dpad_up) {
-            settingVelocity = false;
-            launcher.motor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
-            launcher.motor.setVelocity(0);
-        }
-        if (settingVelocity) {
-            launcher.motor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(pidfCoefficients.p, pidfCoefficients.i, pidfCoefficients.d, (32767d / 1600d)));
-            launcher.motor.setVelocity(1600);
-        }
-
         //TEMP: Increase launcher speed values
         if (gamepad2.xWasPressed()) { launcher.MAX_POWER -= .05; }
         if (gamepad2.bWasPressed()) { launcher.MAX_POWER += .05; }
 
         launcher.togglePower(gamepad2.left_trigger > 0.1, launcher.MAX_POWER);
 
+        boolean ACTIVE_INTAKE = gamepad2.right_trigger > 0.1;
         if (gamepad2.dpad_right) { intake.SWAP_DIRECTION = !intake.SWAP_DIRECTION; }
-        intake.togglePower(gamepad2.right_trigger > 0.1, intake.MAX_POWER);
+        intake.togglePower(ACTIVE_INTAKE, intake.MAX_POWER);
+        transfer.togglePower(ACTIVE_INTAKE, transfer.MAX_POWER);
+        transport.togglePower(ACTIVE_INTAKE, transport.MAX_POWER);
+
+        stopper.togglePosition(gamepad2.y);
     }
 
     //Telemetry + Debug Data
@@ -103,4 +95,20 @@ public class PlayerDrive extends RobotBase {
         telemetry.addLine("------------------------------------");
         telemetry.update();
     }
+
+
+
+
+    /*       if (gamepad2.dpad_down) {
+            settingVelocity = true;
+            launcher.motor.setVelocity(1600);
+        } else if (gamepad2.dpad_up) {
+            settingVelocity = false;
+            launcher.motor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
+            launcher.motor.setVelocity(0);
+        }
+        if (settingVelocity) {
+            launcher.motor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(pidfCoefficients.p, pidfCoefficients.i, pidfCoefficients.d, (32767d / 1600d)));
+            launcher.motor.setVelocity(1600);
+        }*/
 }
