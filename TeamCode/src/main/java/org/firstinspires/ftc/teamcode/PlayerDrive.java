@@ -13,13 +13,11 @@ public class PlayerDrive extends RobotBase {
 
     private static final Logger log = LoggerFactory.getLogger(PlayerDrive.class);
     private int prevPos = 0;
-    private PIDFCoefficients co;
+
     @Override
     public void init() {
         super.init();
         this.prevPos = driveSystem.lf.getCurrentPosition();
-        launcher.motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        co = launcher.motor.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     @Override
@@ -44,47 +42,29 @@ public class PlayerDrive extends RobotBase {
     */
     double curVelTarget = 1600;
     private void gamepad2Loop() {
-        //TEMP: Increase launcher speed values
         if (gamepad2.xWasPressed()) { launcher.MAX_POWER -= .05; }
         if (gamepad2.bWasPressed()) { launcher.MAX_POWER += .05; }
+        if (gamepad2.dpadUpWasPressed()) { curVelTarget += 25; }
+        if (gamepad2.dpadDownWasPressed()) { curVelTarget -= 25; }
 
-        //TODO: Move to Launcher class
-        if (gamepad2.rightBumperWasReleased()) {
-            settingVelocity = true;
-            launcher.motor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, co);
-            launcher.motor.setVelocity(curVelTarget);
-        } else if (gamepad2.leftBumperWasReleased()) {
-            settingVelocity = false;
-            launcher.motor.setVelocity(0);
-        }
-        if (!settingVelocity) {
-            launcher.togglePower(gamepad2.left_trigger > 0.1, launcher.MAX_POWER);
-        }
+        boolean ACTIVE_VELOCITY_LAUNCHER = gamepad2.right_bumper || gamepad2.left_bumper;
+        launcher.toggleVelocity(ACTIVE_VELOCITY_LAUNCHER, curVelTarget);
+        launcher.togglePower(gamepad2.left_trigger > 0.1, launcher.MAX_POWER);
 
-        if (launcher.motor.getVelocity() == curVelTarget) {
-            gamepad2.rumble(10);
+        if (launcher.reachedVelocity() && ACTIVE_VELOCITY_LAUNCHER) {
             gamepad2.rumble(10);
         }
 
-        if (gamepad2.dpadUpWasReleased()) {
-            curVelTarget += 25;
-        } else if (gamepad2.dpadDownWasReleased()) {
-            curVelTarget -= 25;
-        }
-
-        boolean ACTIVE_INTAKE = gamepad2.right_trigger > 0.1;
-        if (gamepad2.dpadRightWasReleased()) {
+        if (gamepad2.dpadRightWasPressed()) {
             intake.SWAP_DIRECTION = !intake.SWAP_DIRECTION;
             transfer.SWAP_DIRECTION = !transfer.SWAP_DIRECTION;
             transport.SWAP_DIRECTION = !transport.SWAP_DIRECTION;
         }
+        boolean ACTIVE_INTAKE = gamepad2.right_trigger > 0.1;
         intake.togglePower(ACTIVE_INTAKE, intake.MAX_POWER);
         transfer.togglePower(ACTIVE_INTAKE, transfer.MAX_POWER);
         transport.togglePower(ACTIVE_INTAKE, transport.MAX_POWER);
 
-       /* if (gamepad2.yWasReleased()) {
-            stopper.switchPosition();
-        }*/
         stopper.togglePosition(!gamepad2.y);
     }
 

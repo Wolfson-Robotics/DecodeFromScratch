@@ -47,7 +47,7 @@ public abstract class RobotBase extends OpMode {
         driveSystem.imu = imu;
 
         launcher = new Roller(hardwareMap, "launcher");
-        launcher.motor.setDirection(DcMotorSimple.Direction.REVERSE);
+        launcher.SWAP_DIRECTION = true;
         launcher.motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         transfer = new Roller(hardwareMap, "transfer");

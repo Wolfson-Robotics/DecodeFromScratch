@@ -41,8 +41,8 @@ public class LauncherAutoTune extends AutoBase {
     // characterization parameters
     private final double[] CHAR_POWERS = new double[] { 0.2, 0.4, 0.6, 0.8 };
     private final long CHAR_SETTLE_MS = 3000;
-    private final int CHAR_SAMPLES = 4;
-    private final long CHAR_SAMPLE_INTERVAL_MS = 1000;
+    private final int CHAR_SAMPLES = 20;
+    private final long CHAR_SAMPLE_INTERVAL_MS = 250;
     private final List<Double> charVels = new ArrayList<>();
     private final List<Double> charPwr = new ArrayList<>();
     private int charIndex = 0;
@@ -51,14 +51,15 @@ public class LauncherAutoTune extends AutoBase {
     // autotune parameters
     private double suggestedKF = 0.0;
     private double suggestedKS = 0.0;
-    private double autotuneTargetVel = 1400.0; // change to your preferred RPM/ticks/sec
+    private double autotuneTargetVel = 1600.0; // change to your preferred RPM/ticks/sec
     private double startP = 0.0002;
     private double stepP = 0.0005;
     private double maxP = 0.010;
     private double currentP = 0.0;
     private long autotuneStartMs = 0L;
-    private final long AUTOTUNE_SETTLE_MS = 600;
+    private final long AUTOTUNE_SETTLE_MS = 3000;
     private final long AUTOTUNE_MEASURE_MS = 800;
+    private final int AUTOTUNE_SAMPLES = 12;
 
     // button edge detection
     private boolean prevA = false;
@@ -125,6 +126,11 @@ public class LauncherAutoTune extends AutoBase {
 
                     charIndex++;
                     if (charIndex < CHAR_POWERS.length) {
+                        launcher.motor.setPower(0);
+                        while (Math.abs(launcher.motor.getVelocity()) > 40) {
+                            Thread.yield();
+                        }
+                        Async.sleep(2000);
                         launcher.motor.setPower(CHAR_POWERS[charIndex]);
                         charPhaseStart = System.currentTimeMillis();
                     } else {
@@ -167,7 +173,7 @@ public class LauncherAutoTune extends AutoBase {
                 // wait settle + measure window, then present operator with options
                 long now2 = System.currentTimeMillis();
                 if (now2 - autotuneStartMs >= AUTOTUNE_SETTLE_MS + AUTOTUNE_MEASURE_MS) {
-                    double measured = sampleAverageVelocity(12, Math.max(1, (int)(AUTOTUNE_MEASURE_MS / 12)));
+                    double measured = sampleAverageVelocity(AUTOTUNE_SAMPLES, Math.max(1, (int)(AUTOTUNE_MEASURE_MS / ((double) AUTOTUNE_SAMPLES))));
                     double err = autotuneTargetVel - measured;
                     telemetry.addData("Tuner test P", currentP);
                     telemetry.addData("Measured", measured);
@@ -243,7 +249,7 @@ public class LauncherAutoTune extends AutoBase {
         // always show some useful telemetry
         telemetry.addData("State", state.name());
         telemetry.addData("Launcher Vel", launcher.motor.getVelocity());
-        telemetry.update();
+//        telemetry.update();
 
     }
 
@@ -252,13 +258,15 @@ public class LauncherAutoTune extends AutoBase {
         double sum = 0.0;
         for (int i = 0; i < samples; i++) {
             sum += launcher.motor.getVelocity();
+            telemetry.addData("Launcher Vel", launcher.motor.getVelocity());
+            telemetry.update();
             try {
                 Thread.sleep(intervalMs);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
         }
-        return sum / samples;
+        return sum / ((double) samples);
     }
 
     // compute linear fit power = kF * vel + kS using characterization lists

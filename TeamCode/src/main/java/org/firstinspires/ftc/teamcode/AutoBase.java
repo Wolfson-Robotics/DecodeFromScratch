@@ -47,52 +47,39 @@ public abstract class AutoBase extends RobotBase {
         this.input = null;
     }
 
+    @Override
+    public void loop() {
+        double vel = launcher.motor.getVelocity();
+
+        telemetry.addData("vel" + count, vel);
+        //Don't add telemetry.update(). Don't want extending classes to overwrite ^^^
+    }
+
 
     /*
     ----------------------------
     Autonomous Utility Functions
     ----------------------------
      */
-
     int count = 0;
     protected void setLauncher(double velocity) {
-        launcher.motor.setVelocity(velocity);
-        double vel = launcher.motor.getVelocity();
+        launcher.applyVelocity(velocity);
 
-        while (Math.abs(vel - velocity) > 20) {
-            vel = launcher.motor.getVelocity();
-            telemetry.addData("vel" + count, vel);
-            telemetry.update();
-            try {Thread.sleep(110); } catch (Exception e) {}
+        ElapsedTime time = new ElapsedTime();
+        time.reset();
+        while (time.seconds() < 6 || !launcher.reachedVelocity()) {
             Thread.yield();
         }
 
-        telemetry.addData("vel" + count, vel);
-        telemetry.update();
         count++;
     }
 
     protected void preventStuck() {
-        transfer.SWAP_DIRECTION = true;
-        transport.SWAP_DIRECTION = true;
-        intake.SWAP_DIRECTION = true;
-        transfer.applyPower(transfer.MAX_POWER);
-        transport.applyPower(transport.MAX_POWER);
-        intake.applyPower(intake.MAX_POWER);
+        feedDirectionForward(false);
+        runFeed();
         Async.sleep(200);
-        transfer.applyPower(0);
-        transport.applyPower(0);
-        intake.applyPower(0);
-        transfer.SWAP_DIRECTION = false;
-        transport.SWAP_DIRECTION = false;
-        intake.SWAP_DIRECTION = false;
-    }
-
-    //Run the feed
-    protected void runFeed() {
-        transfer.applyPower(transfer.MAX_POWER);
-        transport.applyPower(transport.MAX_POWER);
-        intake.applyPower(intake.MAX_POWER);
+        stopFeed();
+        feedDirectionForward(true);
     }
 
     protected void shootBetter(double velocity) {
@@ -100,9 +87,10 @@ public abstract class AutoBase extends RobotBase {
             setLauncher(velocity); //Wait till the velocity gets to its target
             if (i > 0) {
                 preventStuck(); //Move backwards, Move forwards, (feed)
-                //Async.sleep(300); //Pause for 0.3s
             }
             runFeed(); //Runs the feed
+
+            //Pause for different lengths based on current ball
             switch(i) {
                 case 0:
                     Async.sleep(500);
@@ -117,7 +105,6 @@ public abstract class AutoBase extends RobotBase {
                     break;
             }
 
-            //Pause for 0.4s
             stopFeed(); //Stops the feed
             Async.sleep(3000); //Pauses before next launch/run
         }
@@ -127,18 +114,37 @@ public abstract class AutoBase extends RobotBase {
 
     //Stop all the shooting
     public void stopShoot() {
-        launcher.motor.setPower(0);
+        launcher.applyPower(0);
         stopFeed();
     }
 
+    //Run the feed
+    protected void runFeed() {
+        transfer.applyPower(transfer.MAX_POWER);
+        transport.applyPower(transport.MAX_POWER);
+        intake.applyPower(intake.MAX_POWER);
+    }
+
+    protected void feedDirectionForward(boolean swap) {
+        swap = !swap; //So it matches the name
+        transfer.SWAP_DIRECTION = swap;
+        transport.SWAP_DIRECTION = swap;
+        intake.SWAP_DIRECTION = swap;
+    }
+
     //Stop the feed
-    public void stopFeed() {
+    protected void stopFeed() {
         transfer.applyPower(0);
         transport.applyPower(0);
         intake.applyPower(0);
     }
 
-    //Wrappers
+    /*
+    --------
+    Wrappers
+    --------
+    For old auto code
+     */
     public void moveBot(double distIN, double vertical, double pivot, double horizontal) {
         driveSystem.moveBotInches(distIN, vertical, pivot, horizontal);
     }

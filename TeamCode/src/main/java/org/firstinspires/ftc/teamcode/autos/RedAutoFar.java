@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.autos;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.AutoBase;
+import org.firstinspires.ftc.teamcode.debug.util.Async;
 
 @Autonomous(name = "RedAutoFar", group = "Auto")
 public class RedAutoFar extends AutoBase {
@@ -15,24 +16,14 @@ public class RedAutoFar extends AutoBase {
     @Override
     public void start() {
         moveBot(9, 0.2, 0, 0);
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-//            throw new RuntimeException(e);
-        }
-        turnBot(0.2,  24); //prev:28
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {}
-        shootBetter(1710);
-        launcher.motor.setPower(0);
-        stopShoot();
+        Async.sleep(500);
+        turnBot(0.2,  24);
+        Async.sleep(500);
+        shootBetter(1700);
         moveBot(16, 0.2, 0, 0);
     }
 
     @Override
-    public void loop() {
-        Thread.yield();
-    }
+    public void loop() {}
 
 }
