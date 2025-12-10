@@ -18,6 +18,8 @@ public class PlayerDrive extends RobotBase {
     public void init() {
         super.init();
         this.prevPos = driveSystem.lf.getCurrentPosition();
+        PIDFCoefficients pidf = new PIDFCoefficients(300, 0, 0, 10);
+        launcher.motor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidf);
     }
 
     @Override

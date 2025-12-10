@@ -51,7 +51,8 @@ public abstract class AutoBase extends RobotBase {
     public void loop() {
         double vel = launcher.motor.getVelocity();
 
-        telemetry.addData("vel" + count, vel);
+        telemetry.addData("USE CAMERA", USE_CAMERA);
+        telemetry.addData("Vel" + count, vel);
         //Don't add telemetry.update(). Don't want extending classes to overwrite ^^^
     }
 

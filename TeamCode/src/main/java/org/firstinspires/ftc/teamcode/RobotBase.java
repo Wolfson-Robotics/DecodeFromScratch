@@ -14,6 +14,7 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.components.Roller;
 import org.firstinspires.ftc.teamcode.components.MecanumDrive;
+import org.firstinspires.ftc.teamcode.components.RollerEx;
 import org.firstinspires.ftc.teamcode.components.ServoEx;
 import org.firstinspires.ftc.teamcode.components.camera.VisionPortalCamera;
 import org.firstinspires.ftc.teamcode.debug.util.Async;
@@ -25,7 +26,7 @@ public abstract class RobotBase extends OpMode {
 
     //Components
     public MecanumDrive driveSystem;
-    public Roller<DcMotorEx> launcher;
+    public RollerEx launcher;
     public Roller intake, transfer, transport;
     public ServoEx stopper;
 
@@ -46,7 +47,7 @@ public abstract class RobotBase extends OpMode {
         imu = (IMU) hardwareMap.get("imu");
         driveSystem.imu = imu;
 
-        launcher = new Roller(hardwareMap, "launcher");
+        launcher = new RollerEx(hardwareMap, "launcher");
         launcher.SWAP_DIRECTION = true;
         launcher.motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 

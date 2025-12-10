@@ -13,7 +13,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 public class AutoAimShoot extends AutoBase {
 
-    //TODO: UPDATE VALUES WITH LauncherVelocityInput
+    //TODO: UPDATE VALUES WITH GATHERED VELOCITY VALUES FROM PlayerDrive
     double[] distance = {2.0, 2.0, 2.0, 3.0, 3.0, 3.0};
     double[] angle = {0.0, 30.0, -30.0, 0.0, 45.0, -45.0};
     double[] velocity = {1500, 1520, 1510, 1650, 1700, 1690};

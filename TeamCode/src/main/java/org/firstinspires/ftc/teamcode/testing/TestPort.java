@@ -9,31 +9,21 @@ import org.firstinspires.ftc.teamcode.components.Roller;
 @TeleOp(name = "TestPort")
 public class TestPort extends OpMode  {
 
-    public Roller<DcMotorEx> launcher;
-    public Roller<DcMotorEx> intake;
-    public Roller<DcMotorEx> transfer;
+    public Roller<DcMotorEx> motorPort;
 
 
     @Override
     public void init() {
-        launcher = new Roller<>(hardwareMap, "launcher");
-        intake = new Roller<>(hardwareMap, "intake");
-        transfer = new Roller<>(hardwareMap, "transfer");
-
-        transfer.MAX_POWER = 0.8;
+        motorPort = new Roller<>(hardwareMap, "launcher");
     }
 
     @Override
     public void loop() {
-        if (gamepad1.dpadDownWasPressed()) { launcher.SWAP_DIRECTION = !launcher.SWAP_DIRECTION; }
-        if (gamepad1.dpadUpWasPressed()) { intake.SWAP_DIRECTION = !intake.SWAP_DIRECTION; }
-        if (gamepad1.dpadLeftWasPressed()) { transfer.SWAP_DIRECTION = !transfer.SWAP_DIRECTION; }
+        if (gamepad1.dpadDownWasPressed()) { motorPort.SWAP_DIRECTION = !motorPort.SWAP_DIRECTION; }
 
-        launcher.togglePower(gamepad1.x, launcher.MAX_POWER);
-        intake.togglePower(gamepad1.y, intake.MAX_POWER);
-        transfer.togglePower(gamepad1.y, transfer.MAX_POWER);
+        motorPort.togglePower(gamepad1.x, motorPort.MAX_POWER);
 
-        telemetry.addData("Launcher Velocity:", launcher.motor.getVelocity());
+        telemetry.addData("motorPort Velocity:", motorPort.motor.getVelocity());
     }
 
 }
