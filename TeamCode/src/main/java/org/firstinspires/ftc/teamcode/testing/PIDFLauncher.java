@@ -4,8 +4,12 @@ import com.arcrobotics.ftclib.controller.PIDFController;
 import com.bylazar.telemetry.JoinedTelemetry;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
+import java.util.Arrays;
+
+@TeleOp(name = "PIDFLauncher")
 public class PIDFLauncher extends OpMode {
 
     PIDFController controller;
@@ -31,7 +35,7 @@ public class PIDFLauncher extends OpMode {
         double vel = launcher.getVelocity();
         controller.setPIDF(p, i, d, f);
         controller.calculate(vel, target);
-        telemetry.addData("PIDF Co", controller.getCoefficients());
+        telemetry.addData("PIDF Co", Arrays.stream(controller.getCoefficients()).toArray());
         telemetry.addData("Vel", vel);
     }
 

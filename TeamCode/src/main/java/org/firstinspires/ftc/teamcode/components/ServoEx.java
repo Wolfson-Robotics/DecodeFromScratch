@@ -53,11 +53,10 @@ public class ServoEx<T extends Servo> {
     public void switchPosition() {
         if (maxElseMin) {
             applyPosition(MIN_POSITION);
-            maxElseMin = false;
         } else {
             applyPosition(MAX_POSITION);
-            maxElseMin = true;
         }
+        maxElseMin = !maxElseMin;
     }
 
 

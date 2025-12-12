@@ -18,8 +18,8 @@ public class PlayerDrive extends RobotBase {
     public void init() {
         super.init();
         this.prevPos = driveSystem.lf.getCurrentPosition();
-        PIDFCoefficients pidf = new PIDFCoefficients(300, 0, 0, 10);
-        launcher.motor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidf);
+        //PIDFCoefficients pidf = new PIDFCoefficients(300, 0, 0, 10);
+        //launcher.motor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidf);
     }
 
     @Override
@@ -43,19 +43,20 @@ public class PlayerDrive extends RobotBase {
        --------------------------
     */
     double curVelTarget = 1600;
+    boolean STABLE_VELOCITY = false;
     private void gamepad2Loop() {
         if (gamepad2.xWasPressed()) { launcher.MAX_POWER -= .05; }
         if (gamepad2.bWasPressed()) { launcher.MAX_POWER += .05; }
         if (gamepad2.dpadUpWasPressed()) { curVelTarget += 25; }
         if (gamepad2.dpadDownWasPressed()) { curVelTarget -= 25; }
 
-        boolean ACTIVE_VELOCITY_LAUNCHER = gamepad2.right_bumper || gamepad2.left_bumper;
-        launcher.toggleVelocity(ACTIVE_VELOCITY_LAUNCHER, curVelTarget);
-        launcher.togglePower(gamepad2.left_trigger > 0.1, launcher.MAX_POWER);
-
-        if (launcher.reachedVelocity() && ACTIVE_VELOCITY_LAUNCHER) {
-            gamepad2.rumble(10);
+        if (gamepad2.rightBumperWasReleased() || gamepad2.leftBumperWasReleased()) {
+            launcher.switchVelocity(curVelTarget);
+        } else if (launcher.targetVelocity == 0) {
+            launcher.togglePower(gamepad2.left_trigger > 0.1, launcher.MAX_POWER);
         }
+
+        STABLE_VELOCITY = launcher.reachedVelocity() && launcher.motor.getVelocity() > 0;
 
         if (gamepad2.dpadRightWasPressed()) {
             intake.SWAP_DIRECTION = !intake.SWAP_DIRECTION;
@@ -85,6 +86,7 @@ public class PlayerDrive extends RobotBase {
         telemetry.addData("Launcher ACTUAL Power: ", launcher.motor.getPower());
         telemetry.addData("Vel", launcher.motor.getVelocity());
         telemetry.addData("Trying to maintain vel", settingVelocity);
+        telemetry.addData("Reached Stable Velocity", STABLE_VELOCITY);
         telemetry.addData("Target Vel", curVelTarget);
         telemetry.addData("lf traveled", driveSystem.lf.getCurrentPosition() - prevPos);
         telemetry.addData("lf power", driveSystem.lf.getPower());

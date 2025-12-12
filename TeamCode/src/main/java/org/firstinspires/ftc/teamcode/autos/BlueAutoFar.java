@@ -19,7 +19,9 @@ public class BlueAutoFar extends AutoBase {
     }
 
     @Override
-    public void loop() {}
+    public void loop() {
+        super.loop();
+    }
 
 
 }

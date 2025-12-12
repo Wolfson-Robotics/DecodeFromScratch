@@ -11,7 +11,7 @@ public class RollerEx extends Roller<DcMotorEx> {
     public double MAX_VELOCITY = 1500;
     public AngleUnit VELOCITY_UNIT = null;
     public int CHECKS = 50;  //Checks in a row to determine if reached target velocity
-    private double targetVelocity = 0;
+    public double targetVelocity = 0;
     private double curChecks = 0;
 
     public RollerEx(DcMotorEx motor) {
@@ -23,8 +23,8 @@ public class RollerEx extends Roller<DcMotorEx> {
     }
 
     /*
-        Applies SWAP_DIRECTION and sets velocity
-         */
+    Applies SWAP_DIRECTION and sets velocity
+    */
     public void applyVelocity(double velocity) {
         velocity = Math.min(velocity, MAX_VELOCITY);
         if (SWAP_DIRECTION) { velocity = -velocity; }
@@ -35,7 +35,6 @@ public class RollerEx extends Roller<DcMotorEx> {
         } else {
             motor.setVelocity(velocity);
         }
-
     }
 
 
@@ -48,6 +47,19 @@ public class RollerEx extends Roller<DcMotorEx> {
         if (!toggle) { velocity = 0; }
         applyVelocity(velocity);
     }
+
+
+    //TODO: clean this class up
+    public boolean onElseOff = false;
+    public void switchVelocity(double velocity) {
+        if (!onElseOff) {
+            applyVelocity(velocity);
+        } else {
+            applyVelocity(0);
+        }
+        onElseOff = !onElseOff;
+    }
+
 
     /**
      * Will check if the velocity has reached the stable target and return true if so
@@ -65,5 +77,8 @@ public class RollerEx extends Roller<DcMotorEx> {
 
         return false;
     }
+
+
+
 
 }
