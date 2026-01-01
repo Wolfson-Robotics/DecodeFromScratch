@@ -26,7 +26,7 @@ public abstract class RobotBase extends OpMode {
 
     //Components
     public MecanumDrive driveSystem;
-    public RollerEx launcher;
+    public RollerEx launcher, aimer;
     public Roller intake, transfer, transport;
     public ServoEx stopper;
 
@@ -50,6 +50,8 @@ public abstract class RobotBase extends OpMode {
         launcher = new RollerEx(hardwareMap, "launcher");
         launcher.SWAP_DIRECTION = true;
         launcher.motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        aimer = new RollerEx(hardwareMap, "aimer");
+        aimer.motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         transfer = new Roller(hardwareMap, "transfer");
         transfer.MAX_POWER = 0.8;

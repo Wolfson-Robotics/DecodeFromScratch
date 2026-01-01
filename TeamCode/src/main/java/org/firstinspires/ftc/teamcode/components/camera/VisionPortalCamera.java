@@ -50,10 +50,16 @@ public class VisionPortalCamera extends CameraBase<VisionPortal> {
 
     public static VisionPortalCamera createVisionPortalCamera(CameraName camera, VisionProcessor... processor) {
         FrameGrabberProcessor frameGrabber = new FrameGrabberProcessor();
-        ArrayList<VisionProcessor> processors = Arrays.stream(processor).collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<VisionProcessor> processors =
+                Arrays.stream(processor).collect(Collectors.toCollection(ArrayList::new));
         processors.add(frameGrabber);
-        VisionPortal vp = createCustomVisionPortal(camera, (VisionProcessor[]) processors.toArray());
-        return new VisionPortalCamera(vp);
+        VisionPortal vp = createCustomVisionPortal(
+                camera,
+                processors.toArray(new VisionProcessor[0])
+        );
+        VisionPortalCamera cam = new VisionPortalCamera(vp);
+        cam.frameGrabber = frameGrabber;
+        return cam;
     }
 
 }
