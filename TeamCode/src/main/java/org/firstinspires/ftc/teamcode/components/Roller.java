@@ -20,11 +20,9 @@ public class Roller<T extends DcMotorSimple> {
         this.motor = motor;
     }
 
-    public Roller(HardwareMap map, String motorName) {
-        this((T) map.get(motorName));
-    }
+    public Roller(HardwareMap map, String motorName) { this((T) map.get(motorName)); }
 
-    /*
+    /**
     Applies SWAP_DIRECTION and sets power
      */
     public void applyPower(double power) {
@@ -38,7 +36,7 @@ public class Roller<T extends DcMotorSimple> {
 
     /*
     Functionality Methods
-    -------
+    ---------------------
      */
 
     /**

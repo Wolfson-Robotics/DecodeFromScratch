@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.components.Aimer;
 import org.firstinspires.ftc.teamcode.components.Roller;
 import org.firstinspires.ftc.teamcode.components.MecanumDrive;
 import org.firstinspires.ftc.teamcode.components.RollerEx;
@@ -26,9 +27,10 @@ public abstract class RobotBase extends OpMode {
 
     //Components
     public MecanumDrive driveSystem;
-    public RollerEx launcher, aimer;
-    public Roller intake, transfer, transport;
-    public ServoEx stopper;
+    public RollerEx launcher;
+    public Aimer aimer;
+    public Roller<DcMotor> intake, transfer, transport;
+    public ServoEx<Servo> stopper;
 
     public VisionPortalCamera camera;
     public AprilTagProcessor aTagProc;
@@ -50,20 +52,20 @@ public abstract class RobotBase extends OpMode {
         launcher = new RollerEx(hardwareMap, "launcher");
         launcher.SWAP_DIRECTION = true;
         launcher.motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        aimer = new RollerEx(hardwareMap, "aimer");
-        aimer.motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        aimer = new Aimer(hardwareMap, "aimer");
+        aimer.MAX_POWER = 0.5;
 
-        transfer = new Roller(hardwareMap, "transfer");
+        transfer = new Roller<>(hardwareMap, "transfer");
         transfer.MAX_POWER = 0.8;
-        transport = new Roller(hardwareMap, "transport");
+        transport = new Roller<>(hardwareMap, "transport");
         transport.MAX_POWER = 0.8;
 
-        stopper = new ServoEx(hardwareMap, "stopper");
+        stopper = new ServoEx<>(hardwareMap, "stopper");
         stopper.servo.setDirection(Servo.Direction.REVERSE);
         stopper.MIN_POSITION = 0.27;
         stopper.MAX_POSITION = 0.4;
 
-        intake = new Roller(hardwareMap, "intake");
+        intake = new Roller<>(hardwareMap, "intake");
     }
 
     //By default this will not be called in init() of base, so extending classes have to call it to use it

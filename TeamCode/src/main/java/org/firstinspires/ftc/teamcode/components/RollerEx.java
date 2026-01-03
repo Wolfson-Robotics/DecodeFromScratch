@@ -22,7 +22,7 @@ public class RollerEx extends Roller<DcMotorEx> {
         super(map, motorName);
     }
 
-    /*
+    /**
     Applies SWAP_DIRECTION and sets velocity
     */
     public void applyVelocity(double velocity) {
@@ -49,15 +49,16 @@ public class RollerEx extends Roller<DcMotorEx> {
     }
 
 
-    //TODO: clean this class up
-    public boolean onElseOff = false;
+    /**
+     * Switches velocity of roller
+     * @param velocity velocity value to be applied if its off
+     */
     public void switchVelocity(double velocity) {
-        if (!onElseOff) {
-            applyVelocity(velocity);
+        if (targetVelocity != 0) {
+            applyVelocity(0); //Turn it off if its on
         } else {
-            applyVelocity(0);
+            applyVelocity(velocity); //Turn it on if its off
         }
-        onElseOff = !onElseOff;
     }
 
 
@@ -73,9 +74,7 @@ public class RollerEx extends Roller<DcMotorEx> {
         } else {
             curChecks = 0;
         }
-        if (curChecks >= CHECKS) { return true; }
-
-        return false;
+        return curChecks >= CHECKS;
     }
 
 
