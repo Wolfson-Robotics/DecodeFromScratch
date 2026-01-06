@@ -59,9 +59,9 @@ public class PlayerDrive extends RobotBase {
         STABLE_VELOCITY = launcher.reachedVelocity() && launcher.motor.getVelocity() > 0;
 
         if (gamepad2.dpadRightWasPressed()) {
-            intake.SWAP_DIRECTION = !intake.SWAP_DIRECTION;
-            transfer.SWAP_DIRECTION = !transfer.SWAP_DIRECTION;
-            transport.SWAP_DIRECTION = !transport.SWAP_DIRECTION;
+            intake.swapDirection();
+            transfer.swapDirection();
+            transport.swapDirection();
         }
         boolean ACTIVE_INTAKE = gamepad2.right_trigger > 0.1;
         intake.togglePower(ACTIVE_INTAKE, intake.MAX_POWER);

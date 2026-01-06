@@ -27,7 +27,7 @@ public class Aimer extends RollerEx {
     }
 
     public void aim(double yaw) {
-        SWAP_DIRECTION = yaw > 0;
+        swapDirection(yaw > 0);
         if (yaw < yawFacingRange || yaw > -yawFacingRange) { applyPower(0); }
         applyPower(MAX_POWER);
     }

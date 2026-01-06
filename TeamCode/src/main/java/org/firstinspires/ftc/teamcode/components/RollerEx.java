@@ -27,7 +27,6 @@ public class RollerEx extends Roller<DcMotorEx> {
     */
     public void applyVelocity(double velocity) {
         velocity = Math.min(velocity, MAX_VELOCITY);
-        if (SWAP_DIRECTION) { velocity = -velocity; }
         targetVelocity = velocity;
         curChecks = 0;
         if (VELOCITY_UNIT != null) {

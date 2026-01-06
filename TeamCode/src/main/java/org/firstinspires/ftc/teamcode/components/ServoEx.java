@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.components;
 
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -31,6 +32,32 @@ public class ServoEx<T extends Servo> {
         position = Math.max(position, MIN_POSITION);
         servo.setPosition(position);
     }*/
+
+    /** Replacement for SWAP_DIRECTION
+     Will reverse servo if swap is true else it goes forwards
+     @param swap reverse servo if true
+     */
+    public void swapDirection(boolean swap) {
+        if (swap) {
+            servo.setDirection(Servo.Direction.REVERSE);
+        } else {
+            servo.setDirection(Servo.Direction.FORWARD);
+        }
+    }
+
+    /**
+     * Swaps the direction (if its going reverse it swaps forward, etc.)
+     */
+    public void swapDirection() {
+        switch (servo.getDirection()) {
+            case FORWARD:
+                swapDirection(true);
+            case REVERSE:
+                swapDirection(false);
+        }
+    }
+
+
 
     /**
     Toggle between min and max position

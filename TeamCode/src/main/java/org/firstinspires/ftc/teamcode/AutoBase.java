@@ -1,15 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
-import static org.firstinspires.ftc.teamcode.pedropathing.Constants.pathConstraints;
-
-import com.pedropathing.follower.Follower;
-import com.pedropathing.follower.FollowerConstants;
-import com.pedropathing.ftc.FollowerBuilder;
-import com.pedropathing.ftc.drivetrains.MecanumConstants;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.debug.util.Async;
@@ -134,9 +126,9 @@ public abstract class AutoBase extends RobotBase {
 
     protected void feedDirectionForward(boolean swap) {
         swap = !swap; //So it matches the name
-        transfer.SWAP_DIRECTION = swap;
-        transport.SWAP_DIRECTION = swap;
-        intake.SWAP_DIRECTION = swap;
+        transfer.swapDirection(swap);
+        transport.swapDirection(swap);
+        intake.swapDirection(swap);
     }
 
     //Stop the feed

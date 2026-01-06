@@ -50,7 +50,7 @@ public abstract class RobotBase extends OpMode {
         driveSystem.imu = imu;
 
         launcher = new RollerEx(hardwareMap, "launcher");
-        launcher.SWAP_DIRECTION = true;
+        launcher.swapDirection();
         launcher.motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         aimer = new Aimer(hardwareMap, "aimer");
         aimer.MAX_POWER = 0.5;
@@ -61,7 +61,7 @@ public abstract class RobotBase extends OpMode {
         transport.MAX_POWER = 0.8;
 
         stopper = new ServoEx<>(hardwareMap, "stopper");
-        stopper.servo.setDirection(Servo.Direction.REVERSE);
+        stopper.swapDirection();
         stopper.MIN_POSITION = 0.27;
         stopper.MAX_POSITION = 0.4;
 

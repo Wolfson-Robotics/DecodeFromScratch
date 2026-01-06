@@ -19,7 +19,7 @@ public class TestPort extends OpMode  {
 
     @Override
     public void loop() {
-        if (gamepad1.dpadDownWasPressed()) { motorPort.SWAP_DIRECTION = !motorPort.SWAP_DIRECTION; }
+        if (gamepad1.dpadDownWasPressed()) { motorPort.swapDirection(); }
 
         motorPort.togglePower(gamepad1.x, motorPort.MAX_POWER);
 
