@@ -8,9 +8,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 public class RollerEx extends Roller<DcMotorEx> {
 
-    public double MAX_VELOCITY = 1500;
+    public double MAX_VELOCITY = 999999; //no limits
     public AngleUnit VELOCITY_UNIT = null;
-    public int CHECKS = 50;  //Checks in a row to determine if reached target velocity
+    public int CHECKS = 20;  //Checks in a row to determine if reached target velocity
     public double targetVelocity = 0;
     private double curChecks = 0;
 
@@ -68,7 +68,7 @@ public class RollerEx extends Roller<DcMotorEx> {
      */
     public boolean reachedVelocity() {
         double velocity = motor.getVelocity();
-        if (targetVelocity > (velocity - 30) && targetVelocity < (velocity + 30)) {
+        if (targetVelocity > (velocity - 40) && targetVelocity < (velocity + 40)) {
             curChecks++;
         } else {
             curChecks = 0;

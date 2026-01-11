@@ -52,8 +52,10 @@ public class ServoEx<T extends Servo> {
         switch (servo.getDirection()) {
             case FORWARD:
                 swapDirection(true);
+                break;
             case REVERSE:
                 swapDirection(false);
+                break;
         }
     }
 

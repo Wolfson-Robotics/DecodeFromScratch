@@ -9,15 +9,15 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 import java.util.Arrays;
 
-@TeleOp(name = "PIDFLauncherValues")
+@TeleOp(name = "PIDFLauncher")
 public class PIDFLauncher extends OpMode {
 
     public DcMotorEx flywheelMotor;
-    public double highVelocity = 1500;
+    public double highVelocity = 1800;
     public double lowVelocity = 900;
     double curTargetVelocity = highVelocity;
-    double F = 0;
-    double P = 0;
+    double P = 167;
+    double F = 13.3;
     double[] stepSizes = {10.0, 1.0, 0.1, 0.001, 0.0001};
     int stepIndex = 1;
 
@@ -25,7 +25,7 @@ public class PIDFLauncher extends OpMode {
 
     @Override
     public void init() {
-        flywheelMotor = hardwareMap.get(DcMotorEx.class, "motor");
+        flywheelMotor = hardwareMap.get(DcMotorEx.class, "launcher");
         flywheelMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         flywheelMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 

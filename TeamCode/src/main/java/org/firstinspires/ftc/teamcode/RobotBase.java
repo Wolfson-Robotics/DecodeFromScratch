@@ -2,23 +2,25 @@ package org.firstinspires.ftc.teamcode;
 
 import android.os.Environment;
 
+import com.arcrobotics.ftclib.controller.PIDFController;
+import com.arcrobotics.ftclib.controller.wpilibcontroller.SimpleMotorFeedforward;
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.components.Aimer;
 import org.firstinspires.ftc.teamcode.components.Roller;
 import org.firstinspires.ftc.teamcode.components.MecanumDrive;
 import org.firstinspires.ftc.teamcode.components.RollerEx;
 import org.firstinspires.ftc.teamcode.components.ServoEx;
 import org.firstinspires.ftc.teamcode.components.camera.VisionPortalCamera;
-import org.firstinspires.ftc.teamcode.debug.util.Async;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.Optional;
@@ -29,43 +31,65 @@ public abstract class RobotBase extends OpMode {
     public MecanumDrive driveSystem;
     public RollerEx launcher;
     public Aimer aimer;
-    public Roller<DcMotor> intake, transfer, transport;
+    public Roller<DcMotor> intake, transfer, lTransport, rTransport;
     public ServoEx<Servo> stopper;
 
     public VisionPortalCamera camera;
     public AprilTagProcessor aTagProc;
 
     public IMU imu;
+    public GoBildaPinpointDriver pinpoint;
 
     //Storage/Files
     protected final String storagePath = Environment.getExternalStorageDirectory().getPath();
     protected final String logsPath = storagePath + "/Logs/";
 
+    PIDFCoefficients launcherPIDF = new PIDFCoefficients(167, 0, 0, 13.3);
+
+    public double FAR_VELOCITY = 1625;
+    public double CLOSE_VELOCITY = 1400;
 
     //If overriding init(), make to sure call super.init();
     @Override
     public void init() {
         driveSystem = new MecanumDrive(hardwareMap, "lf_drive", "lb_drive", "rf_drive", "rb_drive");
-        imu = (IMU) hardwareMap.get("imu");
-        driveSystem.imu = imu;
+        driveSystem.ROBOT_LENGTH_IN = 13.62;
 
         launcher = new RollerEx(hardwareMap, "launcher");
         launcher.swapDirection();
         launcher.motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        aimer = new Aimer(hardwareMap, "aimer");
+        launcher.motor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, launcherPIDF);
+        launcher.MAX_POWER = 1;
+
+        imu = (IMU) hardwareMap.get("imu");
+        driveSystem.imu = imu;
+
+        aimer = new Aimer((DcMotorEx) hardwareMap.get("aimer"), imu);
         aimer.MAX_POWER = 0.5;
 
         transfer = new Roller<>(hardwareMap, "transfer");
         transfer.MAX_POWER = 0.8;
-        transport = new Roller<>(hardwareMap, "transport");
-        transport.MAX_POWER = 0.8;
+        lTransport = new Roller<>(hardwareMap, "left transport");
+        lTransport.swapDirection();
+        lTransport.MAX_POWER = 0.8;
+        rTransport = new Roller<>(hardwareMap, "right transport");
+        rTransport.MAX_POWER = 0.8;
 
         stopper = new ServoEx<>(hardwareMap, "stopper");
         stopper.swapDirection();
-        stopper.MIN_POSITION = 0.27;
-        stopper.MAX_POSITION = 0.4;
+        stopper.MIN_POSITION = 0.27; //Closed
+        stopper.MAX_POSITION = 0.4; //Open
 
         intake = new Roller<>(hardwareMap, "intake");
+
+
+        //TODO: finish this (ALL VALUES ARE MADE UP)
+        pinpoint = (GoBildaPinpointDriver) hardwareMap.get("pinpoint");
+        pinpoint.setOffsets(9999, 9999, DistanceUnit.MM);
+        pinpoint.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_SWINGARM_POD);
+        pinpoint.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD,
+                GoBildaPinpointDriver.EncoderDirection.FORWARD);
+        pinpoint.resetPosAndIMU();
     }
 
     //By default this will not be called in init() of base, so extending classes have to call it to use it

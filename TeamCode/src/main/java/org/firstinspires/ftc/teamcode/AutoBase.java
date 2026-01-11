@@ -66,13 +66,21 @@ public abstract class AutoBase extends RobotBase {
 
         ElapsedTime time = new ElapsedTime();
         time.reset();
-        while (time.seconds() < 6 || !launcher.reachedVelocity()) {
-            Thread.yield();
+        int count = 0;
+        while (time.seconds() < 5 && !launcher.reachedVelocity()) {
+            count++;
+            telemetry.addData("Seconds", time.seconds());
+            telemetry.addData("Launcher Vel", launcher.motor.getVelocity());
+            telemetry.addData("Reached Stable Vel", launcher.reachedVelocity());
+            telemetry.addData("Target Vel", velocity);
+            telemetry.addData("Count", count);
+            telemetry.update();
         }
+
+
 
         count++;
     }
-
     protected void preventStuck() {
         feedDirectionForward(false);
         runFeed();
@@ -82,30 +90,28 @@ public abstract class AutoBase extends RobotBase {
     }
 
     protected void shootBetter(double velocity) {
+        stopper.applyPosition(stopper.MIN_POSITION);
         for (int i = 0; i < 3; i++) {
             setLauncher(velocity); //Wait till the velocity gets to its target
-            if (i > 0) {
-                preventStuck(); //Move backwards, Move forwards, (feed)
-            }
             runFeed(); //Runs the feed
 
             //Pause for different lengths based on current ball
             switch(i) {
                 case 0:
-                    Async.sleep(500);
+                    Async.sleep(500); //NEEDED
                     break;
                 case 1:
-                    Async.sleep(850);
+                    Async.sleep(850); //NEEDED
                     break;
                 case 2:
                     Async.sleep(1500);
                     stopper.applyPosition(stopper.MAX_POSITION);
-                    Async.sleep(1500);
+                    Async.sleep(500);
                     break;
             }
 
             stopFeed(); //Stops the feed
-            Async.sleep(3000); //Pauses before next launch/run
+            //Async.sleep(150); //Pauses before next launch/run
         }
 
         stopShoot();
@@ -120,21 +126,24 @@ public abstract class AutoBase extends RobotBase {
     //Run the feed
     protected void runFeed() {
         transfer.applyPower(transfer.MAX_POWER);
-        transport.applyPower(transport.MAX_POWER);
+        lTransport.applyPower(lTransport.MAX_POWER);
+        rTransport.applyPower(rTransport.MAX_POWER);
         intake.applyPower(intake.MAX_POWER);
     }
 
     protected void feedDirectionForward(boolean swap) {
         swap = !swap; //So it matches the name
         transfer.swapDirection(swap);
-        transport.swapDirection(swap);
+        lTransport.swapDirection(swap);
+        rTransport.swapDirection(swap);
         intake.swapDirection(swap);
     }
 
     //Stop the feed
     protected void stopFeed() {
         transfer.applyPower(0);
-        transport.applyPower(0);
+        lTransport.applyPower(0);
+        rTransport.applyPower(0);
         intake.applyPower(0);
     }
 

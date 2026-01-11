@@ -20,6 +20,8 @@ public class MecanumDrive {
 
     public IMU imu;
 
+    public double ROBOT_LENGTH_IN = 13.62;
+
     public MecanumDrive(DcMotorEx lf, DcMotorEx lb, DcMotorEx rf, DcMotorEx rb) {
         this.lf = lf;
         this.lb = lb;
@@ -27,6 +29,10 @@ public class MecanumDrive {
         this.rb = rb;
         this.lf.setDirection(DcMotorSimple.Direction.REVERSE);
         this.lb.setDirection(DcMotorSimple.Direction.REVERSE);
+        this.lf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        this.lb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        this.rf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        this.rb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
     public MecanumDrive(HardwareMap map, String lf, String lb, String rf, String rb) {
@@ -164,8 +170,7 @@ public class MecanumDrive {
     private double degConv = 0.51;
     public void turnBot(double power, double degrees) {
         // 13.62 inches is default robot length
-        double robotLength = 13.62;
-        double distUnit = (robotLength) / (Math.cos(45));
+        double distUnit = (ROBOT_LENGTH_IN) / (Math.cos(45));
         double distIN = (Math.abs((distUnit * ((degrees*1.75))) / 90))*degConv;
         int motorTics;
         int pivot = (degrees >= 0) ? 1 : -1;

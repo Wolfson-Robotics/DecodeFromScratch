@@ -1,10 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,14 +10,11 @@ import org.slf4j.LoggerFactory;
 public class PlayerDrive extends RobotBase {
 
     private static final Logger log = LoggerFactory.getLogger(PlayerDrive.class);
-    private int prevPos = 0;
 
     @Override
     public void init() {
         super.init();
-        this.prevPos = driveSystem.lf.getCurrentPosition();
-        //PIDFCoefficients pidf = new PIDFCoefficients(300, 0, 0, 10);
-        //launcher.motor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidf);
+        initCamera();
     }
 
     @Override
@@ -42,41 +37,73 @@ public class PlayerDrive extends RobotBase {
     /* Intake, Launcher, Transfer
        --------------------------
     */
-    double curVelTarget = 1600;
-    boolean STABLE_VELOCITY = false;
+    double curVelTarget = CLOSE_VELOCITY;
+    boolean stableVelocity = false;
     private void gamepad2Loop() {
         if (gamepad2.xWasPressed()) { launcher.MAX_POWER -= .05; }
         if (gamepad2.bWasPressed()) { launcher.MAX_POWER += .05; }
         if (gamepad2.dpadUpWasPressed()) { curVelTarget += 25; }
         if (gamepad2.dpadDownWasPressed()) { curVelTarget -= 25; }
+        if (gamepad2.dpadLeftWasPressed()) {
+            curVelTarget = curVelTarget != CLOSE_VELOCITY ? CLOSE_VELOCITY : FAR_VELOCITY;
+        }
 
-        if (gamepad2.rightBumperWasReleased() || gamepad2.leftBumperWasReleased()) {
+        if (gamepad2.rightBumperWasReleased()) {
             launcher.switchVelocity(curVelTarget);
         } else if (launcher.targetVelocity == 0) {
             launcher.togglePower(gamepad2.left_trigger > 0.1, launcher.MAX_POWER);
         }
 
-        STABLE_VELOCITY = launcher.reachedVelocity() && launcher.motor.getVelocity() > 0;
+        stableVelocity = launcher.reachedVelocity() && launcher.motor.getVelocity() > 0;
 
         if (gamepad2.dpadRightWasPressed()) {
             intake.swapDirection();
             transfer.swapDirection();
-            transport.swapDirection();
+            lTransport.swapDirection();
+            rTransport.swapDirection();
         }
         boolean ACTIVE_INTAKE = gamepad2.right_trigger > 0.1;
         intake.togglePower(ACTIVE_INTAKE, intake.MAX_POWER);
         transfer.togglePower(ACTIVE_INTAKE, transfer.MAX_POWER);
-        transport.togglePower(ACTIVE_INTAKE, transport.MAX_POWER);
+        lTransport.togglePower(ACTIVE_INTAKE, lTransport.MAX_POWER);
+        rTransport.togglePower(ACTIVE_INTAKE, rTransport.MAX_POWER);
 
         stopper.togglePosition(!gamepad2.y);
     }
 
     //Telemetry + Debug Data
     private void commonPrintData() {
+        telemetry.addLine("|||--IMPORTANT INFORMATION--|||");
+        telemetry.addData("Launcher Velocity", launcher.motor.getVelocity());
+        telemetry.addData("Launcher Target Velocity", curVelTarget);
+        telemetry.addData("Launcher Velocity Stable", stableVelocity);
+        telemetry.addData("Launcher Power", launcher.motor.getPower());
+        telemetry.addLine("|||-------------------------|||");
+        telemetry.addLine();
+        telemetry.addLine();
+        telemetry.addLine();
+        telemetry.addLine();
+        telemetry.addLine("|||----GAMEPAD1 CONTROLS----|||");
+        telemetry.addData("Moving (Forward & Strafe)", "Left Stick");
+        telemetry.addData("Rotating", "Right Stick");
+        telemetry.addData("Slow Down", "Left/Right Bumper");
+        telemetry.addLine("|||-------------------------|||");
+        telemetry.addLine("|||----GAMEPAD2 CONTROLS----|||");
+        telemetry.addData("Launcher", "Right Bumper (Toggle)");
+        telemetry.addData("Intake", "Right Trigger (Hold)");
+        telemetry.addData("Open Stopper", "Y (Hold)");
+        telemetry.addData("Swap Intake Direction", "Dpad Right (Toggle)");
+        telemetry.addData("Switch Launcher Velocity", "Dpad Left (Toggle)");
+        telemetry.addData("Change Launcher Velocity", "Dpad Up/Down");
+        telemetry.addLine("|||-------------------------|||");
+    }
+
+    /*
         double PRINCIPAL_POWER = 0.61;
         double voltage = getVoltage();
         double res = scaleVoltPF(voltage);
         double res2 = 0.7 * res;
+
 
         telemetry.addData("scale/res", res);
         telemetry.addData("stopper pos", stopper.servo.getPosition());
@@ -86,7 +113,7 @@ public class PlayerDrive extends RobotBase {
         telemetry.addData("Launcher ACTUAL Power: ", launcher.motor.getPower());
         telemetry.addData("Vel", launcher.motor.getVelocity());
         telemetry.addData("Trying to maintain vel", settingVelocity);
-        telemetry.addData("Reached Stable Velocity", STABLE_VELOCITY);
+        telemetry.addData("Reached Stable Velocity", stableVelocity);
         telemetry.addData("Target Vel", curVelTarget);
         telemetry.addData("lf traveled", driveSystem.lf.getCurrentPosition() - prevPos);
         telemetry.addData("lf power", driveSystem.lf.getPower());
@@ -113,11 +140,6 @@ public class PlayerDrive extends RobotBase {
         telemetry.addLine("TUNING:");
         telemetry.addData("'X' / 'B' Button", "Decrease/Increase Launcher Power");
         telemetry.addLine("------------------------------------");
-        telemetry.update();
-    }
-
-
-
-
+        telemetry.update();*/
 
 }

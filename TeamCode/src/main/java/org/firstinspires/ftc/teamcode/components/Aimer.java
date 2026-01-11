@@ -3,6 +3,12 @@ package org.firstinspires.ftc.teamcode.components;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.IMU;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 /** Aimer - 360 Degrees Auto Aimer Towards Target
  *  ---------------------------------------------
@@ -14,22 +20,28 @@ public class Aimer extends RollerEx {
 
     //public double targetYaw;
     //private double currentYaw;
-    public double yawFacingRange = 1; //Default range is 1 to -1
+    IMU imu;
 
-    public Aimer(DcMotorEx motor) {
+    double TICKS_PER_REV = 437;
+    double GEAR_RATIO = 1;
+
+    public Aimer(DcMotorEx motor, IMU imu) {
         super(motor);
         this.motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         this.motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
-    public Aimer(HardwareMap map, String motorName) {
-        this((DcMotorEx) map.get(motorName));
+    public Aimer(HardwareMap map, String motorName, String imuName) {
+        this((DcMotorEx) map.get(motorName), (IMU) map.get(imuName));
     }
 
     public void aim(double yaw) {
-        swapDirection(yaw > 0);
-        if (yaw < yawFacingRange || yaw > -yawFacingRange) { applyPower(0); }
-        applyPower(MAX_POWER);
-    }
+        motor.getCurrentPosition();
+        Orientation robotOrientation = imu.getRobotOrientation(AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
+        double robotHeading = robotOrientation.secondAngle;
+        double curAngle = (motor.getCurrentPosition() / TICKS_PER_REV) * GEAR_RATIO + robotHeading;
 
+    }
+    //current angle (motorpositiion / ticksperrev) * gearRatio + botHeading
+    //FTCLib PID Controller
 }

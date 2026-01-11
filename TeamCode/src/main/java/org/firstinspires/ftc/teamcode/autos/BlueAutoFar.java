@@ -10,18 +10,36 @@ public class BlueAutoFar extends AutoBase {
 
     @Override
     public void start() {
+        launcher.applyVelocity(FAR_VELOCITY);
         moveBot(9, 0.2, 0, 0);
-        Async.sleep(500);
+        Async.sleep(250);
         turnBot(0.2,  -24);
         Async.sleep(500);
-        shootBetter(1700);
+        shootBetter(FAR_VELOCITY);
+        //moveBot(16, 0.2, 0, 0);
+
+        turnBot(0.2, -69);
+        Async.sleep(400);
+        runFeed();
+        moveBot(16, 0, 0, 0.4);
+        Async.sleep(400);
+        moveBot(52, 0.4, 0, 0);
+        Async.sleep(1000);
+        launcher.applyVelocity(FAR_VELOCITY);
+        stopFeed();
+        //Go back
+        moveBot(49, -0.4, 0, 0);
+        Async.sleep(400);
+        moveBot(18, 0, 0, -0.4);
+        Async.sleep(250);
+        turnBot(0.2, 68);
+        shootBetter(FAR_VELOCITY);
         moveBot(16, 0.2, 0, 0);
     }
 
     @Override
-    public void loop() {
-        super.loop();
+    public void stop() {
+        Async.stopAll();
     }
-
 
 }

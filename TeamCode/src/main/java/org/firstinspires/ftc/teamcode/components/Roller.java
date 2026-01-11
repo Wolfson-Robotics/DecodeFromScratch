@@ -7,7 +7,7 @@ public class Roller<T extends DcMotorSimple> {
 
     public T motor;
     public double POWER_INCREMENT = 0.1;
-    public double MAX_POWER = 0.7;
+    public double MAX_POWER = 1;
 
 
 
@@ -45,8 +45,10 @@ public class Roller<T extends DcMotorSimple> {
         switch (motor.getDirection()) {
             case FORWARD:
                 swapDirection(true);
+                break;
             case REVERSE:
                 swapDirection(false);
+                break;
         }
     }
 

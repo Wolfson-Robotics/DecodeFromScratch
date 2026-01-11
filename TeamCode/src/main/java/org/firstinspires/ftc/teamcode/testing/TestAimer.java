@@ -19,6 +19,7 @@ public class TestAimer extends RobotBase {
 
     @Override
     public void init() {
+        super.init();
 //        aTagProc = AprilTagProcessor.easyCreateWithDefaults();
 //       /* camera = VisionPortalCamera.createVisionPortalCamera(
 //                ,
@@ -43,7 +44,7 @@ public class TestAimer extends RobotBase {
 
         double yaw = tag.ftcPose.yaw;
         telemetry.addData("Yaw", yaw);
-
+        telemetry.update();
         aimer.aim(yaw);
     }
 
