@@ -5,10 +5,12 @@ import android.os.Environment;
 import com.arcrobotics.ftclib.controller.PIDFController;
 import com.arcrobotics.ftclib.controller.wpilibcontroller.SimpleMotorFeedforward;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.ImuOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
@@ -62,9 +64,28 @@ public abstract class RobotBase extends OpMode {
         launcher.MAX_POWER = 1;
 
         imu = (IMU) hardwareMap.get("imu");
+        //TODO: change imu parameters
+        ImuOrientationOnRobot o = new RevHubOrientationOnRobot(
+                RevHubOrientationOnRobot.LogoFacingDirection.BACKWARD,
+                RevHubOrientationOnRobot.UsbFacingDirection.RIGHT
+        );
+        imu.initialize(new IMU.Parameters(o));
+        imu.resetYaw();
         driveSystem.imu = imu;
 
-        aimer = new Aimer((DcMotorEx) hardwareMap.get("aimer"), imu);
+        //TODO: finish this (ALL VALUES ARE MADE UP)
+        pinpoint = (GoBildaPinpointDriver) hardwareMap.get("pinpoint");
+        pinpoint.setOffsets(9999, 9999, DistanceUnit.MM);
+        pinpoint.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_SWINGARM_POD);
+        pinpoint.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD,
+                GoBildaPinpointDriver.EncoderDirection.FORWARD);
+        pinpoint.resetPosAndIMU();
+
+        aimer = new Aimer((DcMotorEx) hardwareMap.get("aimer"));
+        aimer.imu = imu;
+        aimer.pinpoint = pinpoint;
+        aimer.TICKS_PER_REV = 537.7;
+        aimer.GEAR_RATIO = 1.0 / 4.0;
         aimer.MAX_POWER = 0.5;
 
         transfer = new Roller<>(hardwareMap, "transfer");
@@ -81,15 +102,6 @@ public abstract class RobotBase extends OpMode {
         stopper.MAX_POSITION = 0.4; //Open
 
         intake = new Roller<>(hardwareMap, "intake");
-
-
-        //TODO: finish this (ALL VALUES ARE MADE UP)
-        pinpoint = (GoBildaPinpointDriver) hardwareMap.get("pinpoint");
-        pinpoint.setOffsets(9999, 9999, DistanceUnit.MM);
-        pinpoint.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_SWINGARM_POD);
-        pinpoint.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD,
-                GoBildaPinpointDriver.EncoderDirection.FORWARD);
-        pinpoint.resetPosAndIMU();
     }
 
     //By default this will not be called in init() of base, so extending classes have to call it to use it
