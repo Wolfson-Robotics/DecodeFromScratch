@@ -30,9 +30,9 @@ public class RollerEx extends Roller<DcMotorEx> {
         targetVelocity = velocity;
         curChecks = 0;
         if (VELOCITY_UNIT != null) {
-            motor.setVelocity(velocity, AngleUnit.DEGREES);
+            motor.setVelocity(targetVelocity, AngleUnit.DEGREES);
         } else {
-            motor.setVelocity(velocity);
+            motor.setVelocity(targetVelocity);
         }
     }
 

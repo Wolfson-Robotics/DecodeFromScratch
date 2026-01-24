@@ -13,7 +13,7 @@ import java.util.Arrays;
 public class PIDFLauncher extends OpMode {
 
     public DcMotorEx flywheelMotor;
-    public double highVelocity = 1800;
+    public double highVelocity = 1500;
     public double lowVelocity = 900;
     double curTargetVelocity = highVelocity;
     double P = 167;
@@ -62,10 +62,12 @@ public class PIDFLauncher extends OpMode {
         telemetry.addData("Target Velocity", curTargetVelocity);
         telemetry.addData("Current Velocity", curVelocity);
         telemetry.addData("Error", "%.2f", error);
+        telemetry.addData("Launcher Power", flywheelMotor.getPower());
         telemetry.addLine("-----------------------------------");
         telemetry.addData("Tuning P", "%.4f (D-Pad U/D)", P);
         telemetry.addData("Tuning F", "%.4f (D-Pad L/R)", F);
         telemetry.addData("Step Size", "%.4f (B Button)", stepSizes[stepIndex]);
         telemetry.addLine("Swap Velocities (Y Button)");
+
     }
 }

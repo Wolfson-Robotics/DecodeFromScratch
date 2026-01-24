@@ -25,8 +25,7 @@ public class PIDFTurret extends OpMode {
     @Override
     public void init() {
         aimer = (DcMotorEx) hardwareMap.get("aimer");
-        aimer.setPower(0.5);
-        aimer.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION, co);
+        //aimer.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION, co);
     }
 
     int dir = 1;
@@ -47,8 +46,9 @@ public class PIDFTurret extends OpMode {
 
         if (gamepad1.xWasPressed()) {
             aimer.setTargetPosition(targetPos);
-            aimer.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDFCoefficients(p, i, d, f));
+            //aimer.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDFCoefficients(p, i, d, f));
             aimer.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            aimer.setPower(0.2);
         }
 
         telemetry.addLine("Y - Switch position");

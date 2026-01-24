@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import android.os.Environment;
 
-import com.arcrobotics.ftclib.controller.PIDFController;
+import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.controller.wpilibcontroller.SimpleMotorFeedforward;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -59,33 +59,33 @@ public abstract class RobotBase extends OpMode {
 
         launcher = new RollerEx(hardwareMap, "launcher");
         launcher.swapDirection();
-        launcher.motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         launcher.motor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, launcherPIDF);
         launcher.MAX_POWER = 1;
 
         imu = (IMU) hardwareMap.get("imu");
-        //TODO: change imu parameters
         ImuOrientationOnRobot o = new RevHubOrientationOnRobot(
                 RevHubOrientationOnRobot.LogoFacingDirection.BACKWARD,
-                RevHubOrientationOnRobot.UsbFacingDirection.RIGHT
+                RevHubOrientationOnRobot.UsbFacingDirection.UP
         );
         imu.initialize(new IMU.Parameters(o));
         imu.resetYaw();
         driveSystem.imu = imu;
 
-        //TODO: finish this (ALL VALUES ARE MADE UP)
         pinpoint = (GoBildaPinpointDriver) hardwareMap.get("pinpoint");
-        pinpoint.setOffsets(9999, 9999, DistanceUnit.MM);
+        pinpoint.setPosY(0, DistanceUnit.INCH);
+        pinpoint.setPosX(-1.75, DistanceUnit.INCH);
         pinpoint.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_SWINGARM_POD);
-        pinpoint.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD,
-                GoBildaPinpointDriver.EncoderDirection.FORWARD);
+        pinpoint.setEncoderDirections(
+                GoBildaPinpointDriver.EncoderDirection.REVERSED,
+                GoBildaPinpointDriver.EncoderDirection.REVERSED
+        );
         pinpoint.resetPosAndIMU();
 
         aimer = new Aimer((DcMotorEx) hardwareMap.get("aimer"));
         aimer.imu = imu;
-        aimer.pinpoint = pinpoint;
+        aimer.controller = new PIDController(0.0022, 0.02, 0.00035);
         aimer.TICKS_PER_REV = 537.7;
-        aimer.GEAR_RATIO = 1.0 / 4.0;
+        aimer.GEAR_RATIO = 92.0 / 200.0;
         aimer.MAX_POWER = 0.5;
 
         transfer = new Roller<>(hardwareMap, "transfer");
