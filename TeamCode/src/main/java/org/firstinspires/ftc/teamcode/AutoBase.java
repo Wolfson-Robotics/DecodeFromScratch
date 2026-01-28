@@ -13,7 +13,7 @@ public abstract class AutoBase extends RobotBase {
 
 
     //April Tag IDs
-    public final int BLUE_TAG = 20, RED_TAG = 24, GPP_TAG = 22, PGP_TAG = 22, PPG_TAG = 23;
+
     protected boolean USE_CAMERA = false;
 
     private final PersistentTelemetry pTelem = new PersistentTelemetry(telemetry);

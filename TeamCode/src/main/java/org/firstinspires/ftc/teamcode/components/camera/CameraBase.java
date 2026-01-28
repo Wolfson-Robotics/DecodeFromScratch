@@ -5,7 +5,7 @@ import org.opencv.core.Mat;
 
 public abstract class CameraBase<T extends CameraStreamSource> {
 
-    protected final T device;
+    public final T device;
 
     public CameraBase(T device) {
         this.device = device;

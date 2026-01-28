@@ -23,9 +23,9 @@ public class Constants {
 
     public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, 1, 1);
     public static FollowerConstants followerConstants = new FollowerConstants()
-            .mass(11.7) //unit = kg
-            .forwardZeroPowerAcceleration(-41.914)
-            .lateralZeroPowerAcceleration(-29.878);
+            .mass(11.8) //unit = kg
+            .forwardZeroPowerAcceleration(-42.218)
+            .lateralZeroPowerAcceleration(-74.888);
     public static MecanumConstants driveConstants = new MecanumConstants()
             .maxPower(1)
             .rightFrontMotorName("rf_drive")
@@ -36,12 +36,12 @@ public class Constants {
             .leftRearMotorDirection(DcMotorSimple.Direction.REVERSE)
             .rightFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
             .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD)
-            .xVelocity(57.493)
-            .yVelocity(58.554);
+            .xVelocity(86.398)
+            .yVelocity(67.341);
     public static PinpointConstants localizerConstants = new PinpointConstants()
-            .forwardPodY(0)
-            .strafePodX(-1.75)
             .distanceUnit(DistanceUnit.INCH)
+            .forwardPodY(0.1)
+            .strafePodX(-2.125)
             .hardwareMapName("pinpoint")
             .encoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_SWINGARM_POD)
             .forwardEncoderDirection(GoBildaPinpointDriver.EncoderDirection.REVERSED)

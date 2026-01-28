@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode;
 import android.os.Environment;
 
 import com.arcrobotics.ftclib.controller.PIDController;
-import com.arcrobotics.ftclib.controller.wpilibcontroller.SimpleMotorFeedforward;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -17,7 +16,7 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.components.Aimer;
+import org.firstinspires.ftc.teamcode.components.Turret;
 import org.firstinspires.ftc.teamcode.components.Roller;
 import org.firstinspires.ftc.teamcode.components.MecanumDrive;
 import org.firstinspires.ftc.teamcode.components.RollerEx;
@@ -32,7 +31,7 @@ public abstract class RobotBase extends OpMode {
     //Components
     public MecanumDrive driveSystem;
     public RollerEx launcher;
-    public Aimer aimer;
+    public Turret turret;
     public Roller<DcMotor> intake, transfer, lTransport, rTransport;
     public ServoEx<Servo> stopper;
 
@@ -50,6 +49,7 @@ public abstract class RobotBase extends OpMode {
 
     public double FAR_VELOCITY = 1625;
     public double CLOSE_VELOCITY = 1400;
+    public final int BLUE_TAG = 20, RED_TAG = 24, GPP_TAG = 22, PGP_TAG = 22, PPG_TAG = 23;
 
     //If overriding init(), make to sure call super.init();
     @Override
@@ -81,12 +81,12 @@ public abstract class RobotBase extends OpMode {
         );
         pinpoint.resetPosAndIMU();
 
-        aimer = new Aimer((DcMotorEx) hardwareMap.get("aimer"));
-        aimer.imu = imu;
-        aimer.controller = new PIDController(0.0022, 0.02, 0.00035);
-        aimer.TICKS_PER_REV = 537.7;
-        aimer.GEAR_RATIO = 92.0 / 200.0;
-        aimer.MAX_POWER = 0.5;
+        turret = new Turret((DcMotorEx) hardwareMap.get("aimer"));
+        turret.imu = imu;
+        turret.TICKS_PER_REV = 537.7;
+        turret.GEAR_RATIO = 92.0 / 200.0;
+        turret.MAX_POWER = 0.5;
+        turret.curTurretState = Turret.TurretState.GO_TO_ZERO;
 
         transfer = new Roller<>(hardwareMap, "transfer");
         transfer.MAX_POWER = 0.8;

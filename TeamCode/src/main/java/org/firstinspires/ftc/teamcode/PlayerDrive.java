@@ -3,6 +3,9 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.components.Turret;
+import org.firstinspires.ftc.teamcode.components.camera.VisionPortalCamera;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,10 +14,19 @@ public class PlayerDrive extends RobotBase {
 
     private static final Logger log = LoggerFactory.getLogger(PlayerDrive.class);
 
+    int targetTag = BLUE_TAG;
+
     @Override
     public void init() {
         super.init();
         initCamera();
+
+        if (gamepad2.dpadLeftWasPressed()) {
+            targetTag = BLUE_TAG;
+        }
+        if (gamepad2.dpadRightWasPressed()) {
+            targetTag = RED_TAG;
+        }
     }
 
     @Override
@@ -39,6 +51,8 @@ public class PlayerDrive extends RobotBase {
     */
     double curVelTarget = CLOSE_VELOCITY;
     boolean stableVelocity = false;
+    //boolean firstMode = true;
+    AprilTagDetection tag = null;
     private void gamepad2Loop() {
         if (gamepad2.xWasPressed()) { launcher.MAX_POWER -= .05; }
         if (gamepad2.bWasPressed()) { launcher.MAX_POWER += .05; }
@@ -47,6 +61,22 @@ public class PlayerDrive extends RobotBase {
         if (gamepad2.dpadLeftWasPressed()) {
             curVelTarget = curVelTarget != CLOSE_VELOCITY ? CLOSE_VELOCITY : FAR_VELOCITY;
         }
+
+        tag = VisionPortalCamera.getTargetTag(aTagProc, targetTag);
+        turret.TARGET_TAG = tag;
+        /*if (gamepad2.leftBumperWasPressed()) {
+            if (firstMode) {
+                turret.curTurretState = Turret.TurretState.FOLLOW_TAG;
+                firstMode = false;
+            } else {
+                turret.curTurretState = Turret.TurretState.GO_TO_ZERO;
+                firstMode = true;
+            }
+        }*/
+        if (gamepad2.leftBumperWasPressed()) {
+            turret.switchTurretState(Turret.TurretState.FOLLOW_TAG);
+        }
+        turret.loop(); //NECESSARY FOR TURRET TO WORK
 
         if (gamepad2.rightBumperWasReleased()) {
             launcher.switchVelocity(curVelTarget);
@@ -78,6 +108,9 @@ public class PlayerDrive extends RobotBase {
         telemetry.addData("Launcher Target Velocity", curVelTarget);
         telemetry.addData("Launcher Velocity Stable", stableVelocity);
         telemetry.addData("Launcher Power", launcher.motor.getPower());
+        telemetry.addData("April Tag Visible", tag != null);
+        telemetry.addData("Turret State", turret.curTurretState);
+        telemetry.addData("Turret Target Global Yaw", turret.TARGET_GLOBAL_YAW);
         telemetry.addLine("|||-------------------------|||");
         telemetry.addLine();
         telemetry.addLine();
@@ -90,6 +123,7 @@ public class PlayerDrive extends RobotBase {
         telemetry.addLine("|||-------------------------|||");
         telemetry.addLine("|||----GAMEPAD2 CONTROLS----|||");
         telemetry.addData("Launcher", "Right Bumper (Toggle)");
+        telemetry.addData("Turret State Toggle", "Left Bumper (Toggle)");
         telemetry.addData("Intake", "Right Trigger (Hold)");
         telemetry.addData("Open Stopper", "Y (Hold)");
         telemetry.addData("Swap Intake Direction", "Dpad Right (Toggle)");
