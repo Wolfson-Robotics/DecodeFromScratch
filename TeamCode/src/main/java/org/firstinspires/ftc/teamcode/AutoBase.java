@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.components.Turret;
 import org.firstinspires.ftc.teamcode.debug.util.Async;
 import org.firstinspires.ftc.teamcode.util.ControllerNumberInput;
 import org.firstinspires.ftc.teamcode.util.PersistentTelemetry;
@@ -22,6 +23,7 @@ public abstract class AutoBase extends RobotBase {
     @Override
     public void init() {
         super.init();
+
         if (USE_CAMERA) {
             initCamera();
             if (camera == null) {
@@ -36,6 +38,9 @@ public abstract class AutoBase extends RobotBase {
         launcher.motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         stopper.applyPosition(stopper.MIN_POSITION);
+        // Inside your start() method or init block
+        turret.switchTurretState(Turret.TurretState.GO_TO_ZERO);
+        turret.loop();
     }
 
     @Override
@@ -155,6 +160,10 @@ public abstract class AutoBase extends RobotBase {
      */
     public void moveBot(double distIN, double vertical, double pivot, double horizontal) {
         driveSystem.moveBotInches(distIN, vertical, pivot, horizontal);
+    }
+
+    public void moveBotDiagonal(double horizIN, double vertIN) {
+        driveSystem.moveBotDiagonal(horizIN, vertIN);
     }
 
     public void turnBot(double power, double degrees) {

@@ -9,6 +9,8 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+// Instructions to connect: adb connect 192.168.43.1:5555
+// cd %localappdata%/android/sdk/platform-tools
 @TeleOp(name = "PlayerDrive")
 public class PlayerDrive extends RobotBase {
 
@@ -53,6 +55,9 @@ public class PlayerDrive extends RobotBase {
     boolean stableVelocity = false;
     //boolean firstMode = true;
     AprilTagDetection tag = null;
+
+    boolean didFirst = false;
+    boolean appliedVelocityDirectly = false;
     private void gamepad2Loop() {
         if (gamepad2.xWasPressed()) { launcher.MAX_POWER -= .05; }
         if (gamepad2.bWasPressed()) { launcher.MAX_POWER += .05; }
@@ -79,7 +84,13 @@ public class PlayerDrive extends RobotBase {
         turret.loop(); //NECESSARY FOR TURRET TO WORK
 
         if (gamepad2.rightBumperWasReleased()) {
+            if (launcher.targetVelocity == curVelTarget && !didFirst) {
+                launcher.applyVelocity(curVelTarget);
+                appliedVelocityDirectly = true;
+                didFirst = true;
+            }else{
             launcher.switchVelocity(curVelTarget);
+            didFirst =true;}
         } else if (launcher.targetVelocity == 0) {
             launcher.togglePower(gamepad2.left_trigger > 0.1, launcher.MAX_POWER);
         }
@@ -105,7 +116,8 @@ public class PlayerDrive extends RobotBase {
     private void commonPrintData() {
         telemetry.addLine("|||--IMPORTANT INFORMATION--|||");
         telemetry.addData("Launcher Velocity", launcher.motor.getVelocity());
-        telemetry.addData("Launcher Target Velocity", curVelTarget);
+        telemetry.addData("Launcher Target Velocity (Supposed)", curVelTarget);
+        telemetry.addData("Launcher Target Velocity (ACTUAL)", launcher.targetVelocity);
         telemetry.addData("Launcher Velocity Stable", stableVelocity);
         telemetry.addData("Launcher Power", launcher.motor.getPower());
         telemetry.addData("April Tag Visible", tag != null);
@@ -130,6 +142,12 @@ public class PlayerDrive extends RobotBase {
         telemetry.addData("Switch Launcher Velocity", "Dpad Left (Toggle)");
         telemetry.addData("Change Launcher Velocity", "Dpad Up/Down");
         telemetry.addLine("|||-------------------------|||");
+        telemetry.addLine();
+        telemetry.addLine();
+        telemetry.addLine();
+        telemetry.addLine();
+        telemetry.addData("didFirst", didFirst);
+        telemetry.addData("appliedVelocityDirectly", appliedVelocityDirectly);
     }
 
     /*

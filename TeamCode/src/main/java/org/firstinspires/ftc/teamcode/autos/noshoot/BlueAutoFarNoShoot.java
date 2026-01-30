@@ -1,39 +1,35 @@
-package org.firstinspires.ftc.teamcode.autos;
+package org.firstinspires.ftc.teamcode.autos.noshoot;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.AutoBase;
 import org.firstinspires.ftc.teamcode.debug.util.Async;
 
-@Autonomous(name = "BlueAutoFar", group = "Auto")
-public class BlueAutoFar extends AutoBase {
+@Autonomous(name = "BlueAutoFarNoShoot", group = "AutoNoShoot")
+public class BlueAutoFarNoShoot extends AutoBase {
 
     @Override
     public void start() {
-        launcher.applyVelocity(FAR_VELOCITY);
         moveBot(9, 0.2, 0, 0);
-        Async.sleep(250);
+        Async.sleep(1000);
         turnBot(0.2,  -16.7);
-        Async.sleep(500);
-        shootBetter(FAR_VELOCITY);
-        //moveBot(16, 0.2, 0, 0);
+        Async.sleep(1000);
 
         turnBot(0.2, -48.2);
-        Async.sleep(400);
+        Async.sleep(1000);
         runFeed();
         moveBot(16, 0, 0, 0.4);
-        Async.sleep(400);
+        Async.sleep(1000);
         moveBot(52, 0.4, 0, 0);
         Async.sleep(1000);
-        launcher.applyVelocity(FAR_VELOCITY);
         stopFeed();
         //Go back
         moveBot(49, -0.4, 0, 0);
-        Async.sleep(400);
+        Async.sleep(1000);
         moveBot(18, 0, 0, -0.4);
-        Async.sleep(250);
+        Async.sleep(1000);
         turnBot(0.2, 47.5);
-        shootBetter(FAR_VELOCITY);
+        Async.sleep(1000);
         moveBot(16, 0.2, 0, 0);
     }
 

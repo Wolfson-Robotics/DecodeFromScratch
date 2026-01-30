@@ -55,7 +55,6 @@ public abstract class RobotBase extends OpMode {
     @Override
     public void init() {
         driveSystem = new MecanumDrive(hardwareMap, "lf_drive", "lb_drive", "rf_drive", "rb_drive");
-        driveSystem.ROBOT_LENGTH_IN = 13.62;
 
         launcher = new RollerEx(hardwareMap, "launcher");
         launcher.swapDirection();

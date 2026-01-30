@@ -18,12 +18,12 @@ public class RedAutoFar extends AutoBase {
         launcher.applyVelocity(FAR_VELOCITY);
         moveBot(5, 0.2, 0, 0);
         Async.sleep(250);
-        turnBot(0.2,  25);
+        turnBot(0.2,  17.5);
         Async.sleep(250);
         shootBetter(FAR_VELOCITY);
         moveBot(16, 0.2, 0, 0);
 
-        turnBot(0.2, 83);
+        turnBot(0.2, 58.0);
         Async.sleep(400);
         runFeed();
         moveBot(8, 0.1, 0, -0.4);
@@ -37,7 +37,7 @@ public class RedAutoFar extends AutoBase {
         Async.sleep(400);
         moveBot(30, 0, 0, 0.4);
         Async.sleep(250);
-        turnBot(0.2, -82);
+        turnBot(0.2, -57.3);
         shootBetter(FAR_VELOCITY);
         moveBot(16, 0.2, 0, 0);
     }

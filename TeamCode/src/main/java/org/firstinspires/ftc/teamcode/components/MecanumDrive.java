@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import static org.firstinspires.ftc.teamcode.debug.util.GeneralUtils.signClamp;
 
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
@@ -20,7 +21,7 @@ public class MecanumDrive {
 
     public IMU imu;
 
-    public double ROBOT_LENGTH_IN = 13.62;
+    public static final double ROBOT_LENGTH_IN = 13.62;
 
     public MecanumDrive(DcMotorEx lf, DcMotorEx lb, DcMotorEx rf, DcMotorEx rb) {
         this.lf = lf;
@@ -119,7 +120,7 @@ public class MecanumDrive {
     --------------------------------------
      */
 
-    private double ticsPerInch = 38;
+    public static final double ticsPerInch = 38;
     public void moveBotInches(double distIN, double vertical, double pivot, double horizontal) {
 
         // 23 motor tics = 1 IN
@@ -167,7 +168,12 @@ public class MecanumDrive {
 
     }
 
-    private double degConv = 0.51;
+    public void moveBotDiagonal(double horizIN, double vertIN) {
+        double angle = Math.toDegrees(Math.atan(vertIN/horizIN));
+        moveBotInches(Math.sqrt(Math.pow(horizIN, 2) + Math.pow(vertIN, 2)), signClamp(vertIN), 0, signClamp(horizIN)*((double)1/45)*(angle-45));
+    }
+
+    public static final double degConv = 0.73;
     public void turnBot(double power, double degrees) {
         // 13.62 inches is default robot length
         double distUnit = (ROBOT_LENGTH_IN) / (Math.cos(45));
