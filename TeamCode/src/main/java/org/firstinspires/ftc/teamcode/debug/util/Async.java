@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.teamcode.debug.util;
 
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+
+import org.firstinspires.ftc.teamcode.RobotBase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -37,11 +41,41 @@ public class Async {
     }
 
     public static void sleep(long ms) {
+        /*
         try {
             Thread.sleep(ms);
         } catch (Exception e) {
             System.out.println("failed to sleep");
+        }*/
+        long startTime = System.currentTimeMillis();
+        while (!RobotBase.isStopRequested() && System.currentTimeMillis() - startTime < ms) {
+            if (RobotBase.isStopRequested() || Thread.currentThread().isInterrupted()) {
+                break;
+            }
+            try {
+                Thread.sleep(10);
+            } catch (Exception e) {
+                Thread.currentThread().interrupt();
+                System.out.println("failed to sleep");
+            }
         }
     }
+    /*
+    // In Async.java
+    public static void sleep(long millis, OpMode opMode) {
+        long startTime = System.currentTimeMillis();
+        while (System.currentTimeMillis() - startTime < millis) {
+            // This is the critical check!
+            if (Thread.currentThread().isInterrupted() || (opMode.)) {
+                break;
+            }
+            try {
+                Thread.sleep(10); // Sleep in small chunks to keep the loop responsive
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                break;
+            }
+        }
+    }*/
 
 }

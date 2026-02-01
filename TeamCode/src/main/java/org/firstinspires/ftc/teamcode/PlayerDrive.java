@@ -11,10 +11,14 @@ import org.slf4j.LoggerFactory;
 
 // Instructions to connect: adb connect 192.168.43.1:5555
 // cd %localappdata%/android/sdk/platform-tools
-@TeleOp(name = "PlayerDrive")
+//@TeleOp(name = "PlayerDrive")
 public class PlayerDrive extends RobotBase {
 
     private static final Logger log = LoggerFactory.getLogger(PlayerDrive.class);
+
+    // CONFIGURABLE VELOCITY VALUES
+    public double LAUNCHER_MAX_VELOCITY = 1625;
+    public double LAUNCHER_MIN_VELOCITY = 1375;
 
     int targetTag = BLUE_TAG;
 
@@ -22,6 +26,10 @@ public class PlayerDrive extends RobotBase {
     public void init() {
         super.init();
         initCamera();
+
+        // Ensure RobotBase velocities match these configurable ones if they are used elsewhere
+        FAR_VELOCITY = LAUNCHER_MAX_VELOCITY;
+        CLOSE_VELOCITY = LAUNCHER_MIN_VELOCITY;
 
         if (gamepad2.dpadLeftWasPressed()) {
             targetTag = BLUE_TAG;
@@ -51,7 +59,7 @@ public class PlayerDrive extends RobotBase {
     /* Intake, Launcher, Transfer
        --------------------------
     */
-    double curVelTarget = CLOSE_VELOCITY;
+    double curVelTarget = 1350; // Default to min
     boolean stableVelocity = false;
     //boolean firstMode = true;
     AprilTagDetection tag = null;
@@ -61,10 +69,13 @@ public class PlayerDrive extends RobotBase {
     private void gamepad2Loop() {
         if (gamepad2.xWasPressed()) { launcher.MAX_POWER -= .05; }
         if (gamepad2.bWasPressed()) { launcher.MAX_POWER += .05; }
-        if (gamepad2.dpadUpWasPressed()) { curVelTarget += 25; }
-        if (gamepad2.dpadDownWasPressed()) { curVelTarget -= 25; }
+        
+        // Updated dpad up/down for fixed velocity values
+        if (gamepad2.dpadUpWasPressed()) { curVelTarget = LAUNCHER_MAX_VELOCITY; }
+        if (gamepad2.dpadDownWasPressed()) { curVelTarget = LAUNCHER_MIN_VELOCITY; }
+        
         if (gamepad2.dpadLeftWasPressed()) {
-            curVelTarget = curVelTarget != CLOSE_VELOCITY ? CLOSE_VELOCITY : FAR_VELOCITY;
+            curVelTarget = curVelTarget != LAUNCHER_MIN_VELOCITY ? LAUNCHER_MIN_VELOCITY : LAUNCHER_MAX_VELOCITY;
         }
 
         tag = VisionPortalCamera.getTargetTag(aTagProc, targetTag);
@@ -139,8 +150,7 @@ public class PlayerDrive extends RobotBase {
         telemetry.addData("Intake", "Right Trigger (Hold)");
         telemetry.addData("Open Stopper", "Y (Hold)");
         telemetry.addData("Swap Intake Direction", "Dpad Right (Toggle)");
-        telemetry.addData("Switch Launcher Velocity", "Dpad Left (Toggle)");
-        telemetry.addData("Change Launcher Velocity", "Dpad Up/Down");
+        telemetry.addData("Switch Launcher Velocity", "Dpad Up (Max) / Down (Min)");
         telemetry.addLine("|||-------------------------|||");
         telemetry.addLine();
         telemetry.addLine();
@@ -149,49 +159,4 @@ public class PlayerDrive extends RobotBase {
         telemetry.addData("didFirst", didFirst);
         telemetry.addData("appliedVelocityDirectly", appliedVelocityDirectly);
     }
-
-    /*
-        double PRINCIPAL_POWER = 0.61;
-        double voltage = getVoltage();
-        double res = scaleVoltPF(voltage);
-        double res2 = 0.7 * res;
-
-
-        telemetry.addData("scale/res", res);
-        telemetry.addData("stopper pos", stopper.servo.getPosition());
-        telemetry.addData("res 2", res2);
-        telemetry.addData("voltage", voltage);
-        telemetry.addData("Launcher Power: ", launcher.MAX_POWER);
-        telemetry.addData("Launcher ACTUAL Power: ", launcher.motor.getPower());
-        telemetry.addData("Vel", launcher.motor.getVelocity());
-        telemetry.addData("Trying to maintain vel", settingVelocity);
-        telemetry.addData("Reached Stable Velocity", stableVelocity);
-        telemetry.addData("Target Vel", curVelTarget);
-        telemetry.addData("lf traveled", driveSystem.lf.getCurrentPosition() - prevPos);
-        telemetry.addData("lf power", driveSystem.lf.getPower());
-        telemetry.addData("rf power", driveSystem.rf.getPower());
-        telemetry.addData("lb power", driveSystem.lb.getPower());
-        telemetry.addData("rb power", driveSystem.rb.getPower());
-        telemetry.addLine("");
-        telemetry.addLine("");
-        telemetry.addLine("--- PlayerDrive Controls (Gamepad 1) ---");
-        telemetry.addLine();
-        telemetry.addLine("DRIVING:");
-        telemetry.addData("Left Stick", "Forward/Backward & Strafe");
-        telemetry.addData("Right Stick", "Pivot/Turn");
-        telemetry.addData("Left/Right Bumper", "Hold for Slow Mode");
-        telemetry.addLine();
-        telemetry.addLine("--- PlayerDrive Controls (Gamepad 2) ---");
-        telemetry.addLine();
-        telemetry.addLine("SYSTEMS:");
-        telemetry.addData("Right Trigger", "Hold to run Intake & Spinners");
-        telemetry.addData("Left Trigger", "Hold to run Launcher");
-        telemetry.addData("DPad Right", "Swap Intake Direction");
-        telemetry.addData("DPad Up/Down", "Set Launcher Velocity (Up=0)");
-        telemetry.addLine();
-        telemetry.addLine("TUNING:");
-        telemetry.addData("'X' / 'B' Button", "Decrease/Increase Launcher Power");
-        telemetry.addLine("------------------------------------");
-        telemetry.update();*/
-
 }

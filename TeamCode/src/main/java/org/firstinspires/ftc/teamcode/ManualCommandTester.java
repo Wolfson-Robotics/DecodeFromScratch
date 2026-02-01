@@ -90,19 +90,19 @@ public class ManualCommandTester extends AutoBase {
         switch (currentType) {
             case MOVE_VERTICAL:
                 // distIN = value, vertical = 1, pivot = 0, horizontal = 0
-                moveBot(value, 1, 0, 0);
+                moveBot(Math.abs(value), 1, 0, 0);
                 break;
             case MOVE_HORIZONTAL:
                 // distIN = value, vertical = 0, pivot = 0, horizontal = 1
-                moveBot(value, 0, 0, 1);
+                moveBot(Math.abs(value), 0, 0, 1);
                 break;
             case TURN_CCW:
                 // power = currentPower, degrees = value
-                turnBot(currentPower, value);
+                turnBot(currentPower, Math.abs(value));
                 break;
             case TURN_CW:
                 // power = currentPower, degrees = -value
-                turnBot(currentPower, -value);
+                turnBot(currentPower, -Math.abs(value));
                 break;
         }
     }

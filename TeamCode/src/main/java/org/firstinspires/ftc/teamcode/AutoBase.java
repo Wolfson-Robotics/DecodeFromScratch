@@ -17,6 +17,8 @@ public abstract class AutoBase extends RobotBase {
 
     protected boolean USE_CAMERA = false;
 
+    public double FAR_VELOCITY = 1555;
+
     private final PersistentTelemetry pTelem = new PersistentTelemetry(telemetry);
     private ControllerNumberInput input = new ControllerNumberInput(gamepad1, pTelem);
 
@@ -72,7 +74,7 @@ public abstract class AutoBase extends RobotBase {
         ElapsedTime time = new ElapsedTime();
         time.reset();
         int count = 0;
-        while (time.seconds() < 5 && !launcher.reachedVelocity()) {
+        while (!isStopRequested() && time.seconds() < 5 && !launcher.reachedVelocity()) {
             count++;
             telemetry.addData("Seconds", time.seconds());
             telemetry.addData("Launcher Vel", launcher.motor.getVelocity());
@@ -94,19 +96,59 @@ public abstract class AutoBase extends RobotBase {
         feedDirectionForward(true);
     }
 
+    int AFTER_SHOOT_VELOCITY_DECREASE = -150;
+    protected void waitForBallShoot(double initVelocity, double ms) {
+        ElapsedTime time = new ElapsedTime();
+        time.reset();
+        int count = 0;
+        while (!isStopRequested() && time.milliseconds() < ms && (launcher.motor.getVelocity() - initVelocity) <= AFTER_SHOOT_VELOCITY_DECREASE) {
+            telemetry.addData("Seconds", time.seconds());
+            telemetry.addData("Launcher Vel", launcher.motor.getVelocity());
+            telemetry.addData("Reached Lower Vel", (launcher.motor.getVelocity() - initVelocity) <= AFTER_SHOOT_VELOCITY_DECREASE);
+            telemetry.addData("Count", count);
+            telemetry.update();
+            count++;
+        }
+    }
+
+    protected void shootEvenBetter(double velocity) {
+        for (int i = 0; i < 3; i++) {
+            Async.runTasksAsync(
+                    () -> setLauncher(velocity),
+                    this::consolidateFeed
+            );
+            Async.sleep(100);
+            stopper.applyPosition(stopper.MIN_POSITION);
+            runFeed();
+            Async.sleep(500);
+            stopper.applyPosition(stopper.MIN_POSITION);
+            stopFeed();
+            //reverseFeed();
+            Async.sleep(150);
+        }
+        stopShoot();
+    }
+
     protected void shootBetter(double velocity) {
         stopper.applyPosition(stopper.MIN_POSITION);
         for (int i = 0; i < 3; i++) {
+            telemetry.addLine("Beginning ball " + i);
+            telemetry.update();
             setLauncher(velocity); //Wait till the velocity gets to its target
+            Async.sleep(600);
             runFeed(); //Runs the feed
 
+            telemetry.addLine("Performing ball " + i);
             //Pause for different lengths based on current ball
             switch(i) {
                 case 0:
-                    Async.sleep(500); //NEEDED
+                    //waitForBallShoot(velocity, 10000);
+                    Async.sleep(600); //NEEDED
                     break;
                 case 1:
-                    Async.sleep(850); //NEEDED
+                    //waitForBallShoot(velocity, 10000);
+                    Async.sleep(450); //NEEDED
+                    stopper.applyPosition(stopper.MAX_POSITION);
                     break;
                 case 2:
                     Async.sleep(1500);
@@ -115,8 +157,19 @@ public abstract class AutoBase extends RobotBase {
                     break;
             }
 
+            telemetry.addLine("Ending ball " + i);
+            telemetry.update();
             stopFeed(); //Stops the feed
             //Async.sleep(150); //Pauses before next launch/run
+            if (i == 1) {
+                telemetry.addLine("Ending ball " + i);
+                telemetry.addLine("On 1");
+                telemetry.update();
+                reverseFeed();
+                Async.sleep(150);
+                stopper.applyPosition(stopper.MIN_POSITION);
+            }
+            //stopper.applyPosition(stopper);
         }
 
         stopShoot();
@@ -134,6 +187,24 @@ public abstract class AutoBase extends RobotBase {
         lTransport.applyPower(lTransport.MAX_POWER);
         rTransport.applyPower(rTransport.MAX_POWER);
         intake.applyPower(intake.MAX_POWER);
+    }
+
+    protected void reverseFeed() {
+        transfer.applyPower(-transfer.MAX_POWER * 0.3);
+        lTransport.applyPower(-lTransport.MAX_POWER * 0.3);
+        rTransport.applyPower(-rTransport.MAX_POWER * 0.3);
+        intake.applyPower(-intake.MAX_POWER * 0.3);
+        Async.sleep(100);
+        stopFeed();
+    }
+
+    protected void consolidateFeed() {
+        stopFeed();
+        stopper.applyPosition(stopper.MAX_POSITION);
+        runFeed();
+        Async.sleep(1000);
+        stopFeed();
+        //stopper.applyPosition(stopper.MIN_POSITION);
     }
 
     protected void feedDirectionForward(boolean swap) {
@@ -164,6 +235,9 @@ public abstract class AutoBase extends RobotBase {
 
     public void moveBotDiagonal(double horizIN, double vertIN) {
         driveSystem.moveBotDiagonal(horizIN, vertIN);
+    }
+    public void moveBotDiagonal(double horizIN, double vertIN, double vertical, double horizontal) {
+        driveSystem.moveBotDiagonal(horizIN, vertIN, vertical, horizontal);
     }
 
     public void turnBot(double power, double degrees) {

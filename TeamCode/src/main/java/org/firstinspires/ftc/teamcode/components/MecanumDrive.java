@@ -8,6 +8,8 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.RobotBase;
+
 import static org.firstinspires.ftc.teamcode.debug.util.GeneralUtils.signClamp;
 
 import java.util.Arrays;
@@ -137,12 +139,12 @@ public class MecanumDrive {
             motorTics = lf.getCurrentPosition() + (int) ((distIN * ticsPerInch) * (posNeg));
             if (posNeg == 1) {
                 // right goes negative
-                while ((lf.getCurrentPosition() < motorTics)) {
+                while (!RobotBase.isStopRequested() && (lf.getCurrentPosition() < motorTics)) {
                     Thread.yield();
                 }
             } else {
                 // left goes positive
-                while ((lf.getCurrentPosition() > motorTics)) {
+                while (!RobotBase.isStopRequested() && (lf.getCurrentPosition() > motorTics)) {
                     Thread.yield();
                 }
             }
@@ -150,11 +152,11 @@ public class MecanumDrive {
             posNeg = vertical >= 0 ? 1 : -1;
             motorTics = rf.getCurrentPosition() + (int) ((distIN * ticsPerInch) * posNeg);
             if (posNeg == -1) {
-                while (rf.getCurrentPosition() > motorTics) {
+                while (!RobotBase.isStopRequested() && rf.getCurrentPosition() > motorTics) {
                     Thread.yield();
                 }
             } else {
-                while ((rf.getCurrentPosition() < motorTics)) {
+                while (!RobotBase.isStopRequested() && (rf.getCurrentPosition() < motorTics)) {
                     Thread.yield();
                 }
             }
@@ -168,12 +170,16 @@ public class MecanumDrive {
 
     }
 
-    public void moveBotDiagonal(double horizIN, double vertIN) {
+    public void moveBotDiagonal(double horizIN, double vertIN, double vertical, double horizontal) {
         double angle = Math.toDegrees(Math.atan(vertIN/horizIN));
-        moveBotInches(Math.sqrt(Math.pow(horizIN, 2) + Math.pow(vertIN, 2)), signClamp(vertIN), 0, signClamp(horizIN)*((double)1/45)*(angle-45));
+        moveBotInches(Math.sqrt(Math.pow(horizIN, 2) + Math.pow(vertIN, 2)), vertical, 0, horizontal*((double)1/45)*(angle-45));
+    }
+    public void moveBotDiagonal(double horizIN, double vertIN) {
+        moveBotDiagonal(horizIN, vertIN, signClamp(vertIN), signClamp(horizIN));
     }
 
     public static final double degConv = 0.73;
+    // NEGATIVE DEGREES IS CLOCKWISE, POSITIVE IS COUNTERCLOCKWISE
     public void turnBot(double power, double degrees) {
         // 13.62 inches is default robot length
         double distUnit = (ROBOT_LENGTH_IN) / (Math.cos(45));
@@ -190,12 +196,12 @@ public class MecanumDrive {
         lb.setPower(power * (pivot));
         motorTics = lf.getCurrentPosition() + (int) Math.round((distIN * ticsPerInch)* pivot);
         if (pivot == 1) {
-            while ((lf.getCurrentPosition() < motorTics)) {
+            while (!RobotBase.isStopRequested() && (lf.getCurrentPosition() < motorTics)) {
                 Thread.yield();
             }
         }
         if (pivot == -1) {
-            while ((lf.getCurrentPosition() > motorTics)) {
+            while (!RobotBase.isStopRequested() && (lf.getCurrentPosition() > motorTics)) {
                 Thread.yield();
             }
         }

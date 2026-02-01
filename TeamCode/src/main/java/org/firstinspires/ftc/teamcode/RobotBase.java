@@ -25,6 +25,7 @@ import org.firstinspires.ftc.teamcode.components.camera.VisionPortalCamera;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class RobotBase extends OpMode {
 
@@ -51,9 +52,12 @@ public abstract class RobotBase extends OpMode {
     public double CLOSE_VELOCITY = 1400;
     public final int BLUE_TAG = 20, RED_TAG = 24, GPP_TAG = 22, PGP_TAG = 22, PPG_TAG = 23;
 
+    public static final AtomicBoolean stopRequested = new AtomicBoolean(false);
+
     //If overriding init(), make to sure call super.init();
     @Override
     public void init() {
+        stopRequested.set(false);
         driveSystem = new MecanumDrive(hardwareMap, "lf_drive", "lb_drive", "rf_drive", "rb_drive");
 
         launcher = new RollerEx(hardwareMap, "launcher");
@@ -110,6 +114,16 @@ public abstract class RobotBase extends OpMode {
                 hardwareMap.get(WebcamName.class, "Webcam 1"),
                 aTagProc
         );
+    }
+
+    @Override
+    public void stop() {
+        stopRequested.set(true);
+        super.stop();
+    }
+
+    public static boolean isStopRequested() {
+        return stopRequested.get();
     }
 
 

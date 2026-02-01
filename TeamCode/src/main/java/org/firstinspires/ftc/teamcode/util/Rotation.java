@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.util;
 
+import org.firstinspires.ftc.teamcode.components.MecanumDrive;
+
 public class Rotation {
 
     //Wrap the degree to 0 -> 90 -> 179.9 -> -179.9 -> -90 -> 0
@@ -27,6 +29,15 @@ public class Rotation {
         }
         return deg;
     }
+
+    public static double motorTicsToDegrees(int motorTics) {
+        double distUnit = (MecanumDrive.ROBOT_LENGTH_IN) / (Math.cos(45));
+        int deltaTics = motorTics;
+        double signedDistIN = ((double) deltaTics) / MecanumDrive.ticsPerInch;
+        double absDegrees = (Math.abs(signedDistIN) / MecanumDrive.degConv) * (90.0 / (distUnit * 1.75));
+        return Math.copySign(absDegrees, signedDistIN);
+    }
+
 
 
 }

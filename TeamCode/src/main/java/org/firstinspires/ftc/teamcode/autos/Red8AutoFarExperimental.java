@@ -5,8 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.AutoBase;
 import org.firstinspires.ftc.teamcode.debug.util.Async;
 
-@Autonomous(name = "RedAutoFar", group = "Auto")
-public class RedAutoFar extends AutoBase {
+@Autonomous(name = "Red8Autofarexperimental", group = "Auto")
+public class Red8AutoFarExperimental extends AutoBase {
 
     @Override
     public void init() {
@@ -20,16 +20,16 @@ public class RedAutoFar extends AutoBase {
         Async.sleep(250);
         turnBot(0.3,  17.5);
         Async.sleep(250);
-        shootBetter(FAR_VELOCITY);
-        moveBot(16, 0.4, 0, 0);
+        shootEvenBetter(FAR_VELOCITY);
+        moveBot(16, 0.2, 0, 0);
 
-        turnBot(0.3, 58.0);
+        turnBot(0.2, 58.0);
         //Async.sleep(400);
         runFeed();
         moveBot(6, 0, 0, -0.4);
-        Async.sleep(300);
+        Async.sleep(400);
         moveBot(45, 0.2, 0, 0);
-        //Async.sleep(100);
+        Async.sleep(100);
         launcher.applyVelocity(FAR_VELOCITY);
         stopFeed();
         moveBot(7, 0.4, 0, 0);
@@ -41,10 +41,9 @@ public class RedAutoFar extends AutoBase {
         moveBot(30, 0, 0, 0.4);
         //moveBotDiagonal(30, 50, -0.4, 0.4);
         Async.sleep(250);
-        moveBot(7.5, 0, 0, -0.4);
         //turnBot(0.2, -57.3);
-        turnBot(0.3, -49.7);
-        shootBetter(FAR_VELOCITY);
+        turnBot(0.3, -51.7);
+        shootEvenBetter(FAR_VELOCITY);
         moveBot(16, 0.2, 0, 0);
     }
 
