@@ -56,6 +56,10 @@ public class Turret extends RollerEx {
         this((DcMotorEx) map.get(motorName));
     }
 
+    /**
+     * The turret loop method, needs to be called every instance the turret needs to updated (usually every frame)
+     * Requires imu to != null, set it by accessing and setting the property of the object
+     */
     public void loop() {
         if (imu == null) { return; }
 
@@ -92,6 +96,20 @@ public class Turret extends RollerEx {
         motor.setPower(MAX_POWER);
     }
 
+    /**
+     * Will toggle based on the boolean between the provided state and GO_TO_ZERO
+     */
+    public void switchTurretState(TurretState state) {
+        if (curTurretState == TurretState.GO_TO_ZERO) {
+            curTurretState = state;
+        } else {
+            curTurretState = TurretState.GO_TO_ZERO;
+        }
+    }
+
+
+
+
     double lastRecordedGlobalYaw = Double.NaN;
     private void getAprilTagYaw() {
         if (TARGET_TAG != null) {
@@ -118,14 +136,8 @@ public class Turret extends RollerEx {
         TARGET_TURRET_YAW = Rotation.limitAndRound(TARGET_TURRET_YAW, MIN_TURRET_YAW, MAX_TURRET_YAW);
     }
 
-    //Will toggle based on the boolean between the provided state and GO_TO_ZERO
-    public void switchTurretState(TurretState state) {
-        if (curTurretState == TurretState.GO_TO_ZERO) {
-            curTurretState = state;
-        } else {
-            curTurretState = TurretState.GO_TO_ZERO;
-        }
 
 
-    }
+
+
 }

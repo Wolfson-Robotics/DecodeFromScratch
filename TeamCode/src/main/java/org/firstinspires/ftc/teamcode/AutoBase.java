@@ -12,12 +12,7 @@ import org.firstinspires.ftc.teamcode.util.PersistentTelemetry;
 @Autonomous(name = "AutoDrive")
 public abstract class AutoBase extends RobotBase {
 
-
-    //April Tag IDs
-
     protected boolean USE_CAMERA = false;
-
-    public double FAR_VELOCITY = 1555;
 
     private final PersistentTelemetry pTelem = new PersistentTelemetry(telemetry);
     private ControllerNumberInput input = new ControllerNumberInput(gamepad1, pTelem);
@@ -42,7 +37,8 @@ public abstract class AutoBase extends RobotBase {
         stopper.applyPosition(stopper.MIN_POSITION);
         // Inside your start() method or init block
         turret.switchTurretState(Turret.TurretState.GO_TO_ZERO);
-        turret.loop();
+
+        FAR_VELOCITY = 1555;
     }
 
     @Override
@@ -58,7 +54,7 @@ public abstract class AutoBase extends RobotBase {
 
         telemetry.addData("USE CAMERA", USE_CAMERA);
         telemetry.addData("Vel" + count, vel);
-        //Don't add telemetry.update(). Don't want extending classes to overwrite ^^^
+        //Don't add telemetry.update(). Don't want extending classes to be overwritten ^^^
     }
 
 

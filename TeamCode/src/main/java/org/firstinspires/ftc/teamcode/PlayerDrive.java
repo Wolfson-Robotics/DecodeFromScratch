@@ -16,20 +16,17 @@ public class PlayerDrive extends RobotBase {
 
     private static final Logger log = LoggerFactory.getLogger(PlayerDrive.class);
 
-    // CONFIGURABLE VELOCITY VALUES
-    public double LAUNCHER_MAX_VELOCITY = 1625;
-    public double LAUNCHER_MIN_VELOCITY = 1375;
-
     int targetTag = BLUE_TAG;
 
     @Override
     public void init() {
         super.init();
         initCamera();
+    }
 
-        // Ensure RobotBase velocities match these configurable ones if they are used elsewhere
-        FAR_VELOCITY = LAUNCHER_MAX_VELOCITY;
-        CLOSE_VELOCITY = LAUNCHER_MIN_VELOCITY;
+    @Override
+    public void init_loop() {
+        super.init_loop();
 
         if (gamepad2.dpadLeftWasPressed()) {
             targetTag = BLUE_TAG;
@@ -37,6 +34,7 @@ public class PlayerDrive extends RobotBase {
         if (gamepad2.dpadRightWasPressed()) {
             targetTag = RED_TAG;
         }
+        commonPrintData();
     }
 
     @Override
@@ -56,14 +54,13 @@ public class PlayerDrive extends RobotBase {
         else { driveSystem.powerFactor = 1.; }
     }
 
-    /* Intake, Launcher, Transfer
+    /*
+        Intake, Launcher, Transfer
        --------------------------
     */
     double curVelTarget = 1350; // Default to min
     boolean stableVelocity = false;
-    //boolean firstMode = true;
     AprilTagDetection tag = null;
-
     boolean didFirst = false;
     boolean appliedVelocityDirectly = false;
     private void gamepad2Loop() {
@@ -71,37 +68,29 @@ public class PlayerDrive extends RobotBase {
         if (gamepad2.bWasPressed()) { launcher.MAX_POWER += .05; }
         
         // Updated dpad up/down for fixed velocity values
-        if (gamepad2.dpadUpWasPressed()) { curVelTarget = LAUNCHER_MAX_VELOCITY; }
-        if (gamepad2.dpadDownWasPressed()) { curVelTarget = LAUNCHER_MIN_VELOCITY; }
+        if (gamepad2.dpadUpWasPressed()) { curVelTarget = FAR_VELOCITY; }
+        if (gamepad2.dpadDownWasPressed()) { curVelTarget = CLOSE_VELOCITY; }
         
         if (gamepad2.dpadLeftWasPressed()) {
-            curVelTarget = curVelTarget != LAUNCHER_MIN_VELOCITY ? LAUNCHER_MIN_VELOCITY : LAUNCHER_MAX_VELOCITY;
+            curVelTarget = curVelTarget != CLOSE_VELOCITY ? CLOSE_VELOCITY : FAR_VELOCITY;
         }
 
         tag = VisionPortalCamera.getTargetTag(aTagProc, targetTag);
         turret.TARGET_TAG = tag;
-        /*if (gamepad2.leftBumperWasPressed()) {
-            if (firstMode) {
-                turret.curTurretState = Turret.TurretState.FOLLOW_TAG;
-                firstMode = false;
-            } else {
-                turret.curTurretState = Turret.TurretState.GO_TO_ZERO;
-                firstMode = true;
-            }
-        }*/
         if (gamepad2.leftBumperWasPressed()) {
             turret.switchTurretState(Turret.TurretState.FOLLOW_TAG);
         }
         turret.loop(); //NECESSARY FOR TURRET TO WORK
 
+        //Either use velocity or allow drivers to use left stick to use power
         if (gamepad2.rightBumperWasReleased()) {
             if (launcher.targetVelocity == curVelTarget && !didFirst) {
                 launcher.applyVelocity(curVelTarget);
                 appliedVelocityDirectly = true;
-                didFirst = true;
-            }else{
-            launcher.switchVelocity(curVelTarget);
-            didFirst =true;}
+            } else {
+                launcher.switchVelocity(curVelTarget);
+            }
+            didFirst = true;
         } else if (launcher.targetVelocity == 0) {
             launcher.togglePower(gamepad2.left_trigger > 0.1, launcher.MAX_POWER);
         }
